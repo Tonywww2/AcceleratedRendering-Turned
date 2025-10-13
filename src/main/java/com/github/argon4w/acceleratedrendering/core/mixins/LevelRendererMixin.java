@@ -7,6 +7,7 @@ import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.layers.L
 import com.github.argon4w.acceleratedrendering.core.meshes.ClientMesh;
 import com.github.argon4w.acceleratedrendering.core.meshes.ServerMesh;
 import com.github.argon4w.acceleratedrendering.core.programs.ComputeShaderProgramLoader;
+import com.github.argon4w.acceleratedrendering.features.entities.AcceleratedEntityRenderingFeature;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -26,6 +27,37 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 		priority	= 998
 )
 public class LevelRendererMixin {
+
+	@Inject(
+			method = "renderLevel",
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/client/renderer/DimensionSpecialEffects;constantAmbientLight()Z"
+			)
+	)
+	private void onAfterCutoutRendering(
+			PoseStack matrices, float tickDelta, long limitTime,
+			boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer,
+			LightTexture lightmapTextureManager, Matrix4f matrix4f,
+			CallbackInfo ci
+	) {
+//		CrossPortalEntityRenderer.onBeginRenderingEntities(matrices);
+		AcceleratedEntityRenderingFeature.useVanillaPipeline();
+	}
+
+	@Inject(
+			method = "renderLevel",
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;endLastBatch()V",
+					ordinal = 1,
+					shift = At.Shift.AFTER
+			)
+	)
+	private void onEndRenderingEntities(PoseStack poseStack, float partialTick, long finishNanoTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f projectionMatrix, CallbackInfo ci) {
+//		CrossPortalEntityRenderer.onEndRenderingEntities(poseStack);
+		AcceleratedEntityRenderingFeature.resetPipeline();
+	}
 
 	@Inject(
 			method	= "renderLevel",
