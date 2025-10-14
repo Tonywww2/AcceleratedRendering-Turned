@@ -3,6 +3,7 @@
   "minVersion": "0.8",
   "package": "com.github.argon4w.acceleratedrendering.compat.curios.mixins",
   "compatibilityLevel": "JAVA_17",
+  "plugin": "com.github.argon4w.acceleratedrendering.compat.curios.mixins.plugin.CuriosCompatMixinPlugin",
   "client": [
     "CuriosLayerMixin"
   ],

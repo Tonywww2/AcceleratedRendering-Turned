@@ -2,20 +2,27 @@ package com.github.argon4w.acceleratedrendering;
 
 import com.github.argon4w.acceleratedrendering.configs.FeatureConfig;
 import com.mojang.logging.LogUtils;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
-@Mod(value= AcceleratedRenderingModEntry.MOD_ID)
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+@Mod(value = AcceleratedRenderingModEntry.MOD_ID)
 public class AcceleratedRenderingModEntry {
 
-	public static final String MOD_ID = "acceleratedrendering";
-	public static final Logger LOGGER = LogUtils.getLogger();
+    public static final String MOD_ID = "acceleratedrendering";
+    public static final Logger LOGGER = LogUtils.getLogger();
 
-	public AcceleratedRenderingModEntry(FMLJavaModLoadingContext context) {
-		context.registerConfig(ModConfig.Type.CLIENT, FeatureConfig.SPEC);
-		LOGGER.debug("TR Config Loaded! ");
-		LOGGER.debug("Fhank you 4 to 5 people! ");
-	}
+    private static final Map<String, Boolean> MOD_LOADED_CACHE = new ConcurrentHashMap<>();
+
+    public AcceleratedRenderingModEntry(FMLJavaModLoadingContext context) {
+        context.registerConfig(ModConfig.Type.CLIENT, FeatureConfig.SPEC);
+        LOGGER.debug("TR Config Loaded! ");
+        LOGGER.debug("Fhank you 4 to 5 people! ");
+    }
+
 }
