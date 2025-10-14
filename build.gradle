@@ -1,4 +1,5 @@
 plugins {
+    id 'eclipse'
     id 'idea'
     id 'java-library'
     id 'maven-publish'
@@ -84,14 +85,6 @@ legacyForge {
         server {
             server()
             programArgument '--nogui'
-            systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
-        }
-
-        // This run config launches GameTestServer and runs all registered gametests, then exits.
-        // By default, the server will crash when no gametests are provided.
-        // The gametest system is also enabled by default for other run configs under the /test command.
-        gameTestServer {
-            type = "gameTestServer"
             systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
         }
 

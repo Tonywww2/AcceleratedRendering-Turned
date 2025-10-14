@@ -1,6 +1,5 @@
 package com.github.argon4w.acceleratedrendering.core.utils;
 
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.LoadingModList;
 import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 
