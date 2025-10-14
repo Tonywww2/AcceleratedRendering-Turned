@@ -4,6 +4,7 @@
   "package": "com.github.argon4w.acceleratedrendering.compat.immpt.mixins",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "CrossPortalEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

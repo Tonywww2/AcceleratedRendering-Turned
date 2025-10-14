@@ -1,5 +1,6 @@
 package com.github.argon4w.acceleratedrendering.features.modelparts.mixins;
 
+import com.github.argon4w.acceleratedrendering.AcceleratedRenderingModEntry;
 import com.github.argon4w.acceleratedrendering.compat.immpt.ImmersivePortalsCompat;
 import com.github.argon4w.acceleratedrendering.core.CoreFeature;
 import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.builders.IBufferGraph;
@@ -7,7 +8,6 @@ import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.builders
 import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.renderers.IAcceleratedRenderer;
 import com.github.argon4w.acceleratedrendering.core.meshes.IMesh;
 import com.github.argon4w.acceleratedrendering.core.meshes.collectors.CulledMeshCollector;
-import com.github.argon4w.acceleratedrendering.core.utils.ModLoadingUtils;
 import com.github.argon4w.acceleratedrendering.features.entities.AcceleratedEntityRenderingFeature;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -24,8 +24,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import qouteall.imm_ptl.core.render.CrossPortalEntityRenderer;
-import qouteall.imm_ptl.core.render.FrontClipping;
 
 import java.util.List;
 import java.util.Map;
@@ -42,7 +40,7 @@ public class ModelPartMixin implements IAcceleratedRenderer<Void> {
     private final Map<IBufferGraph, IMesh> meshes = new Object2ObjectOpenHashMap<>();
 
     @Inject(
-            method = "compile",
+            method = "compile(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V",
             at = @At("HEAD"),
             cancellable = true
     )
@@ -59,7 +57,8 @@ public class ModelPartMixin implements IAcceleratedRenderer<Void> {
     ) {
         var extension = pBuffer.getAccelerated();
 
-        if (ImmersivePortalsCompat.shouldSkipRendering()) return;
+        System.out.println(extension);
+//        if (ImmersivePortalsCompat.shouldSkipRendering()) return;
 
         if (AcceleratedEntityRenderingFeature.isEnabled() &&
                 AcceleratedEntityRenderingFeature.shouldUseAcceleratedPipeline() &&
