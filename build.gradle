@@ -229,6 +229,7 @@ dependencies {
 jar {
     manifest.attributes([
             "MixinConfigs": "${mod_id}.compat.curios.mixins.json," +
+                    "${mod_id}.compat.immpt.mixins.json," +
                     "${mod_id}.compat.immediatelyfast.mixins.json," +
                     "${mod_id}.compat.iris.mixins.json," +
                     "${mod_id}.compat.sodium.mixins.json," +

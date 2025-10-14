@@ -29,37 +29,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class LevelRendererMixin {
 
 	@Inject(
-			method = "renderLevel",
-			at = @At(
-					value = "INVOKE",
-					target = "Lnet/minecraft/client/renderer/DimensionSpecialEffects;constantAmbientLight()Z"
-			)
-	)
-	private void onAfterCutoutRendering(
-			PoseStack matrices, float tickDelta, long limitTime,
-			boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer,
-			LightTexture lightmapTextureManager, Matrix4f matrix4f,
-			CallbackInfo ci
-	) {
-//		CrossPortalEntityRenderer.onBeginRenderingEntities(matrices);
-		AcceleratedEntityRenderingFeature.useVanillaPipeline();
-	}
-
-	@Inject(
-			method = "renderLevel",
-			at = @At(
-					value = "INVOKE",
-					target = "Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;endLastBatch()V",
-					ordinal = 1,
-					shift = At.Shift.AFTER
-			)
-	)
-	private void onEndRenderingEntities(PoseStack poseStack, float partialTick, long finishNanoTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f projectionMatrix, CallbackInfo ci) {
-//		CrossPortalEntityRenderer.onEndRenderingEntities(poseStack);
-		AcceleratedEntityRenderingFeature.resetPipeline();
-	}
-
-	@Inject(
 			method	= "renderLevel",
 			at		= @At("HEAD")
 	)

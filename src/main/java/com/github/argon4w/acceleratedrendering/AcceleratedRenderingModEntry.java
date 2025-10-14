@@ -15,5 +15,7 @@ public class AcceleratedRenderingModEntry {
 
 	public AcceleratedRenderingModEntry(FMLJavaModLoadingContext context) {
 		context.registerConfig(ModConfig.Type.CLIENT, FeatureConfig.SPEC);
+		LOGGER.debug("TR Config Loaded! ");
+		LOGGER.debug("Fhank you 4 to 5 people! ");
 	}
 }

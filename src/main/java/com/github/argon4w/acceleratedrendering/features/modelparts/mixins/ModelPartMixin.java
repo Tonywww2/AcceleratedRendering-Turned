@@ -22,134 +22,139 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import qouteall.imm_ptl.core.render.CrossPortalEntityRenderer;
+import qouteall.imm_ptl.core.render.FrontClipping;
 
 import java.util.List;
 import java.util.Map;
 
 @ExtensionMethod(VertexConsumerExtension.class)
-@Mixin			(ModelPart				.class)
+@Mixin(ModelPart.class)
 public class ModelPartMixin implements IAcceleratedRenderer<Void> {
 
-	@Shadow @Final private	List<ModelPart.Cube>		cubes;
+    @Shadow
+    @Final
+    private List<ModelPart.Cube> cubes;
 
-	@Unique private final	Map<IBufferGraph, IMesh>	meshes = new Object2ObjectOpenHashMap<>();
+    @Unique
+    private final Map<IBufferGraph, IMesh> meshes = new Object2ObjectOpenHashMap<>();
 
-	@Inject(
-			method		= "compile",
-			at			= @At("HEAD"),
-			cancellable	= true
-	)
-	public void compileFast(
-			PoseStack.Pose	pPose,
-			VertexConsumer	pBuffer,
-			int				pPackedLight,
-			int				pPackedOverlay,
-			float			red,
-			float			green,
-			float			blue,
-			float			alpha,
-			CallbackInfo	ci
-	) {
-		var extension = pBuffer.getAccelerated();
+    @Inject(
+            method = "compile",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    public void compileFast(
+            PoseStack.Pose pPose,
+            VertexConsumer pBuffer,
+            int pPackedLight,
+            int pPackedOverlay,
+            float red,
+            float green,
+            float blue,
+            float alpha,
+            CallbackInfo ci
+    ) {
+        var extension = pBuffer.getAccelerated();
 
-		if (			AcceleratedEntityRenderingFeature	.isEnabled						()
-				&&		AcceleratedEntityRenderingFeature	.shouldUseAcceleratedPipeline	()
-				&&	(	CoreFeature							.isRenderingLevel				()
-				||	(	CoreFeature							.isRenderingGui					()
-				&&		AcceleratedEntityRenderingFeature	.shouldAccelerateInGui			()))
-				&&		extension							.isAccelerated					()
-		) {
-			ci			.cancel		();
-			extension	.doRender	(
-					this,
-					null,
-					pPose.pose	(),
-					pPose.normal(),
-					pPackedLight,
-					pPackedOverlay,
-					FastColor.ARGB32.color(
-							(int) (alpha	* 255.0f),
-							(int) (red		* 255.0f),
-							(int) (green	* 255.0f),
-							(int) (blue		* 255.0f)
-					)
-			);
-		}
-	}
+        if (CrossPortalEntityRenderer.isRenderingEntityNormally) return;
+        if (AcceleratedEntityRenderingFeature.isEnabled() &&
+                AcceleratedEntityRenderingFeature.shouldUseAcceleratedPipeline() &&
+                (CoreFeature.isRenderingLevel() ||
+                        (CoreFeature.isRenderingGui() &&
+                                AcceleratedEntityRenderingFeature.shouldAccelerateInGui())) &&
+                (extension.isAccelerated())
+        ) {
+            ci.cancel();
+            extension.doRender(
+                    this,
+                    null,
+                    pPose.pose(),
+                    pPose.normal(),
+                    pPackedLight,
+                    pPackedOverlay,
+                    FastColor.ARGB32.color(
+                            (int) (alpha * 255.0f),
+                            (int) (red * 255.0f),
+                            (int) (green * 255.0f),
+                            (int) (blue * 255.0f)
+                    )
+            );
+        }
+    }
 
-	@Unique
-	@Override
-	public void render(
-			VertexConsumer	vertexConsumer,
-			Void			context,
-			Matrix4f		transform,
-			Matrix3f		normal,
-			int				light,
-			int				overlay,
-			int				color
-	) {
-		var extension	= vertexConsumer.getAccelerated	();
-		var mesh		= meshes		.get			(extension);
+    @Unique
+    @Override
+    public void render(
+            VertexConsumer vertexConsumer,
+            Void context,
+            Matrix4f transform,
+            Matrix3f normal,
+            int light,
+            int overlay,
+            int color
+    ) {
+        var extension = vertexConsumer.getAccelerated();
+        var mesh = meshes.get(extension);
 
-		extension.beginTransform(transform, normal);
+        extension.beginTransform(transform, normal);
 
-		if (mesh != null) {
-			mesh.write(
-					extension,
-					color,
-					light,
-					overlay
-			);
+        if (mesh != null) {
+            mesh.write(
+                    extension,
+                    color,
+                    light,
+                    overlay
+            );
+            extension.endTransform();
+            return;
+        }
 
-			extension.endTransform();
-			return;
-		}
+        var culledMeshCollector = new CulledMeshCollector(extension);
+        var meshBuilder = extension.decorate(culledMeshCollector);
 
-		var culledMeshCollector	= new CulledMeshCollector	(extension);
-		var meshBuilder			= extension.decorate		(culledMeshCollector);
+        for (var cube : cubes) {
+            for (var polygon : cube.polygons) {
+                var polygonNormal = polygon.normal;
 
-		for (var cube : cubes) {
-			for (var polygon : cube.polygons) {
-				var polygonNormal = polygon.normal;
+                for (var vertex : polygon.vertices) {
+                    var vertexPosition = vertex.pos;
 
-				for (var vertex : polygon.vertices) {
-					var vertexPosition = vertex.pos;
+                    meshBuilder.vertex(
+                            vertexPosition.x / 16.0f,
+                            vertexPosition.y / 16.0f,
+                            vertexPosition.z / 16.0f,
+                            1.0f,
+                            1.0f,
+                            1.0f,
+                            1.0f,
+                            vertex.u,
+                            vertex.v,
+                            overlay,
+                            0,
+                            polygonNormal.x,
+                            polygonNormal.y,
+                            polygonNormal.z
+                    );
+                }
+            }
+        }
 
-					meshBuilder.vertex(
-							vertexPosition.x / 16.0f,
-							vertexPosition.y / 16.0f,
-							vertexPosition.z / 16.0f,
-							1.0f,
-							1.0f,
-							1.0f,
-							1.0f,
-							vertex.u,
-							vertex.v,
-							overlay,
-							0,
-							polygonNormal.x,
-							polygonNormal.y,
-							polygonNormal.z
-					);
-				}
-			}
-		}
+        culledMeshCollector.flush();
 
-		culledMeshCollector.flush();
+        mesh = AcceleratedEntityRenderingFeature
+                .getMeshType()
+                .getBuilder()
+                .build(culledMeshCollector);
 
-		mesh = AcceleratedEntityRenderingFeature
-				.getMeshType()
-				.getBuilder	()
-				.build		(culledMeshCollector);
+        meshes.put(extension, mesh);
+        mesh.write(
+                extension,
+                color,
+                light,
+                overlay
+        );
 
-		meshes	.put	(extension, mesh);
-		mesh	.write	(
-				extension,
-				color,
-				light,
-				overlay
-		);
-
-		extension.endTransform();
-	}
+        extension.endTransform();
+    }
 }
