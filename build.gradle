@@ -84,6 +84,7 @@ legacyForge {
             systemProperty 'mixin.env.refMapRemappingFile', "${projectDir}/build/moddev/artifacts/intermediateToNamed.srg"
 
             systemProperty 'mixin.debug.export', 'true'
+            systemProperty 'mixin.dumpTargetOnFailure', 'true'
 
         }
 
@@ -158,6 +159,11 @@ obfuscation {
 
 dependencies {
 
+    annotationProcessor "org.projectlombok:lombok:1.18.38"
+    annotationProcessor 'net.fabricmc:sponge-mixin:0.15.2+mixin.0.8.7'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    annotationProcessor "io.github.llamalad7:mixinextras-common:0.5.0"
+
     modImplementation "io.github.llamalad7:mixinextras-forge:0.4.1"
     modImplementation "maven.modrinth:embeddium:0.3.31+mc1.20.1"
     modImplementation "maven.modrinth:oculus:1.20.1-1.8.0"
@@ -175,10 +181,6 @@ dependencies {
     modCompileOnly "org.projectlombok:lombok:1.18.38"
 
     modRuntimeOnly "curse.maven:configured-457570:5180900"
-
-    annotationProcessor "org.projectlombok:lombok:1.18.38"
-    annotationProcessor 'net.fabricmc:sponge-mixin:0.15.2+mixin.0.8.7'
-    annotationProcessor "io.github.llamalad7:mixinextras-common:0.5.0"
 
     jarJar("io.github.llamalad7:mixinextras-forge:0.4.1")  {
         version {
@@ -211,10 +213,6 @@ mixin {
     config "${mod_id}.feature.text.mixins.json"
     config "${mod_id}.feature.touhoulittlemaid.mixins.json"
 
-}
-
-dependencies {
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 jar {
