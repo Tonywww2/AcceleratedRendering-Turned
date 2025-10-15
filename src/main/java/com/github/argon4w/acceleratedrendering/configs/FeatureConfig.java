@@ -509,13 +509,13 @@ public class FeatureConfig {
 
         builder
                 .comment("Immpt Compatibility Settings")
-                .translation("acceleratedrendering.configuration.Immpt_compatibility")
-                .push("Immpt_compatibility");
+                .translation("acceleratedrendering.configuration.immpt_compatibility")
+                .push("immpt_compatibility");
 
         immptCompatFeatureStatus = builder
                 .comment("- DISABLED: Accelerated Rendering will not compact with Immersive Portal..")
                 .comment("- ENABLED: Accelerated Rendering will try to compact with Immersive Portals.")
-                .translation("acceleratedrendering.configuration.Immpt_compatibility.feature_status")
+                .translation("acceleratedrendering.configuration.immpt_compatibility.feature_status")
                 .defineEnum("feature_status", FeatureStatus.ENABLED);
 
         builder.pop();
