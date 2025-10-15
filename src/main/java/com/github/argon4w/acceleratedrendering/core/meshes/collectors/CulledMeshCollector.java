@@ -9,7 +9,6 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.FastColor;
 
 public class CulledMeshCollector implements VertexConsumer, IMeshCollector {
 

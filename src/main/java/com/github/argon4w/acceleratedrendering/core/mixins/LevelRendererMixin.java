@@ -7,7 +7,6 @@ import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.layers.L
 import com.github.argon4w.acceleratedrendering.core.meshes.ClientMesh;
 import com.github.argon4w.acceleratedrendering.core.meshes.ServerMesh;
 import com.github.argon4w.acceleratedrendering.core.programs.ComputeShaderProgramLoader;
-import com.github.argon4w.acceleratedrendering.features.entities.AcceleratedEntityRenderingFeature;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.vertex.PoseStack;

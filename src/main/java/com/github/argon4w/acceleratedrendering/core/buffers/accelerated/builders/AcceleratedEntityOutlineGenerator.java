@@ -1,7 +1,6 @@
 package com.github.argon4w.acceleratedrendering.core.buffers.accelerated.builders;
 
 import com.github.argon4w.acceleratedrendering.core.meshes.ServerMesh;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

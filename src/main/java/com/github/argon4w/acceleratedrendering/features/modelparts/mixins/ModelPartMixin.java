@@ -1,6 +1,7 @@
 package com.github.argon4w.acceleratedrendering.features.modelparts.mixins;
 
 import com.github.argon4w.acceleratedrendering.AcceleratedRenderingModEntry;
+import com.github.argon4w.acceleratedrendering.compat.immpt.ImmersivePortalsCompat;
 import com.github.argon4w.acceleratedrendering.core.CoreFeature;
 import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.builders.IBufferGraph;
 import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.builders.VertexConsumerExtension;
@@ -23,7 +24,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +39,7 @@ public class ModelPartMixin implements IAcceleratedRenderer<Void> {
     private final Map<IBufferGraph, IMesh> meshes = new Object2ObjectOpenHashMap<>();
 
     @Inject(
-            method = "compile(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V",
+            method = "compile",
             at = @At("HEAD"),
             cancellable = true
     )

@@ -1,12 +1,12 @@
 package com.github.argon4w.acceleratedrendering.compat.immediatelyfast.mixins.plugin;
 
 import com.github.argon4w.acceleratedrendering.core.utils.ModLoadingUtils;
+import java.util.List;
+import java.util.Set;
+
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
-
-import java.util.List;
-import java.util.Set;
 
 public class ImmediatelyFastCompatPlugin implements IMixinConfigPlugin {
 

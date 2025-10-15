@@ -1,6 +1,5 @@
 package com.github.argon4w.acceleratedrendering.compat.curios.mixins.plugin;
 
-import com.github.argon4w.acceleratedrendering.AcceleratedRenderingModEntry;
 import com.github.argon4w.acceleratedrendering.core.utils.ModLoadingUtils;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;

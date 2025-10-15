@@ -3,7 +3,6 @@ package com.github.argon4w.acceleratedrendering.core.utils;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShaderInstance;
 import org.joml.Matrix4f;
 
