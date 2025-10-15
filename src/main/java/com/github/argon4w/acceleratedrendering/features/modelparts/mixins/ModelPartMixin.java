@@ -54,7 +54,7 @@ public class ModelPartMixin implements IAcceleratedRenderer<Void> {
             CallbackInfo ci
     ) {
         var extension = pBuffer.getAccelerated();
-        AcceleratedRenderingModEntry.LOGGER.info("[LOADED]");
+//        AcceleratedRenderingModEntry.LOGGER.info("[LOADED]");
         if (AcceleratedEntityRenderingFeature.isEnabled() &&
                 AcceleratedEntityRenderingFeature.shouldUseAcceleratedPipeline() &&
                 (CoreFeature.isRenderingLevel() ||
@@ -93,7 +93,7 @@ public class ModelPartMixin implements IAcceleratedRenderer<Void> {
     ) {
         var extension = vertexConsumer.getAccelerated();
         var mesh = meshes.get(extension);
-        System.out.println("[DEBUG] ModelPartMixin.onRender() called!");
+
         extension.beginTransform(transform, normal);
 
         if (mesh != null) {

@@ -8,6 +8,6 @@ public class IrisCompatMixinPlugin extends AbstractCompatMixinPlugin {
 
 	@Override
 	protected List<String> getModIDs() {
-		return List.of("iris");
+		return List.of("iris", "oculus");
 	}
 }

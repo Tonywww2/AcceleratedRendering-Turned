@@ -169,7 +169,7 @@ dependencies {
     modImplementation "maven.modrinth:oculus:1.20.1-1.8.0"
 
     modImplementation "curse.maven:cloth-config-348521:5729105"
-    modImplementation "curse.maven:immersive-portals-for-forge-355440:6368524"
+    modCompileOnly "curse.maven:immersive-portals-for-forge-355440:6368524"
 
     modCompileOnly "maven.modrinth:entity-model-features:3.0.1"
     modCompileOnly "maven.modrinth:touhou-little-maid:1.4.0-forge+mc1.20.1"
@@ -181,6 +181,7 @@ dependencies {
     modCompileOnly "org.projectlombok:lombok:1.18.38"
 
     modRuntimeOnly "curse.maven:configured-457570:5180900"
+    modRuntimeOnly "curse.maven:immersive-portals-for-forge-355440:6368524"
 
     jarJar("io.github.llamalad7:mixinextras-forge:0.4.1")  {
         version {

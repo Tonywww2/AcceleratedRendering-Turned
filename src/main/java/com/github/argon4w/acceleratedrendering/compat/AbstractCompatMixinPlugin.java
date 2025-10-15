@@ -15,11 +15,14 @@ public abstract class AbstractCompatMixinPlugin implements IMixinConfigPlugin {
 	public AbstractCompatMixinPlugin() {
 		var shouldApply	= false;
 
+		System.out.println("[DEBUG] " + getClass().getSimpleName() + " checking mods: " + getModIDs());
+
 		for (var id : getModIDs()) {
 			if (LoadingModList.get().getModFileById(id) != null) {
 				shouldApply = true;
 			}
 		}
+		System.out.println("[DEBUG] " + getClass().getSimpleName() + " shouldApply: " + shouldApply);
 
 		this.shouldApply = shouldApply;
 	}

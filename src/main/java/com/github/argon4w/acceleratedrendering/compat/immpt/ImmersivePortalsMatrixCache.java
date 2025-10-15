@@ -9,6 +9,9 @@ public class ImmersivePortalsMatrixCache {
 
     // 在进入传送门渲染前保存原始矩阵
     public static void saveMatrices(Matrix4f view, Matrix4f projection) {
+//        System.out.println("Saving matrices for portal rendering.");
+//        System.out.printf("View Matrix: %s\n", view);
+//        System.out.printf("Projection Matrix: %s\n", projection);
         if (!isPortalRendering) {
             savedViewMatrix = new Matrix4f(view);
             savedProjectionMatrix = new Matrix4f(projection);

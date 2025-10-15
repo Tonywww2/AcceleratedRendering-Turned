@@ -8,6 +8,6 @@ public class SodiumCompatMixinPlugin extends AbstractCompatMixinPlugin {
 
     @Override
     protected List<String> getModIDs() {
-        return List.of("sodium");
+        return List.of("sodium", "embeddium");
     }
 }
