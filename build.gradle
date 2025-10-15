@@ -83,8 +83,8 @@ legacyForge {
             systemProperty 'mixin.env.remapRefMap', 'true'
             systemProperty 'mixin.env.refMapRemappingFile', "${projectDir}/build/moddev/artifacts/intermediateToNamed.srg"
 
-            systemProperty 'mixin.debug.export', 'true'
-            systemProperty 'mixin.dumpTargetOnFailure', 'true'
+//            systemProperty 'mixin.debug.export', 'true'
+//            systemProperty 'mixin.dumpTargetOnFailure', 'true'
 
         }
 

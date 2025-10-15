@@ -1,7 +1,5 @@
 package com.github.argon4w.acceleratedrendering.features.culling;
 
-import com.github.argon4w.acceleratedrendering.compat.immpt.ImmersivePortalsCompat;
-import com.github.argon4w.acceleratedrendering.compat.immpt.ImmersivePortalsMatrixCache;
 import com.github.argon4w.acceleratedrendering.core.backends.programs.ComputeProgram;
 import com.github.argon4w.acceleratedrendering.core.backends.programs.Uniform;
 import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.builders.AcceleratedBufferBuilder;
@@ -10,7 +8,6 @@ import com.github.argon4w.acceleratedrendering.core.programs.culling.ICullingPro
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.resources.ResourceLocation;
-import org.joml.Matrix4f;
 
 public class OrientationCullingProgramDispatcher implements ICullingProgramDispatcher {
 
@@ -40,21 +37,9 @@ public class OrientationCullingProgramDispatcher implements ICullingProgramDispa
         var vertexCount = builder.getTotalVertexCount();
         var polygonCount = vertexCount / mode.primitiveLength;
 
-        // 使用正确的矩阵进行剔除
-        if (ImmersivePortalsCompat.MOD_LOADED) {
-            Matrix4f viewMatrix = ImmersivePortalsMatrixCache.getViewMatrixForCulling(
-                    RenderSystem.getModelViewMatrix()
-            );
-            Matrix4f projMatrix = ImmersivePortalsMatrixCache.getProjectionMatrixForCulling(
-                    RenderSystem.getProjectionMatrix()
-            );
+        viewMatrixUniform.uploadMatrix4f(RenderSystem.getModelViewMatrix());
+        projectMatrixUniform.uploadMatrix4f(RenderSystem.getProjectionMatrix());
 
-            viewMatrixUniform.uploadMatrix4f(viewMatrix);
-            projectMatrixUniform.uploadMatrix4f(projMatrix);
-        } else {
-            viewMatrixUniform.uploadMatrix4f(RenderSystem.getModelViewMatrix());
-            projectMatrixUniform.uploadMatrix4f(RenderSystem.getProjectionMatrix());
-        }
         polygonCountUniform.uploadUnsignedInt(polygonCount);
         vertexOffsetUniform.uploadUnsignedInt((int) (builder.getVertexBuffer().getOffset() / builder.getVertexSize()));
         varyingOffsetUniform.uploadUnsignedInt((int) (builder.getVaryingBuffer().getOffset() / builder.getVaryingSize()));

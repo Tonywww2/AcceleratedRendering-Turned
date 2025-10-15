@@ -54,7 +54,7 @@ public class ModelPartMixin implements IAcceleratedRenderer<Void> {
             CallbackInfo ci
     ) {
         var extension = pBuffer.getAccelerated();
-//        AcceleratedRenderingModEntry.LOGGER.info("[LOADED]");
+        
         if (AcceleratedEntityRenderingFeature.isEnabled() &&
                 AcceleratedEntityRenderingFeature.shouldUseAcceleratedPipeline() &&
                 (CoreFeature.isRenderingLevel() ||
