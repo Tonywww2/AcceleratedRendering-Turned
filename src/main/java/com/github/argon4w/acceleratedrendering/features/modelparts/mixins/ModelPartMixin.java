@@ -1,7 +1,6 @@
 package com.github.argon4w.acceleratedrendering.features.modelparts.mixins;
 
 import com.github.argon4w.acceleratedrendering.AcceleratedRenderingModEntry;
-import com.github.argon4w.acceleratedrendering.compat.immpt.ImmersivePortalsCompat;
 import com.github.argon4w.acceleratedrendering.core.CoreFeature;
 import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.builders.IBufferGraph;
 import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.builders.VertexConsumerExtension;
@@ -44,7 +43,7 @@ public class ModelPartMixin implements IAcceleratedRenderer<Void> {
             at = @At("HEAD"),
             cancellable = true
     )
-    public void compileFast(
+    private void compileFast(
             PoseStack.Pose pPose,
             VertexConsumer pBuffer,
             int pPackedLight,
@@ -56,10 +55,7 @@ public class ModelPartMixin implements IAcceleratedRenderer<Void> {
             CallbackInfo ci
     ) {
         var extension = pBuffer.getAccelerated();
-
-        System.out.println(extension);
-//        if (ImmersivePortalsCompat.shouldSkipRendering()) return;
-
+        AcceleratedRenderingModEntry.LOGGER.debug("[LOADED]");
         if (AcceleratedEntityRenderingFeature.isEnabled() &&
                 AcceleratedEntityRenderingFeature.shouldUseAcceleratedPipeline() &&
                 (CoreFeature.isRenderingLevel() ||

@@ -1,7 +1,7 @@
 package com.github.argon4w.acceleratedrendering.compat.immpt.mixins;
 
-import com.github.argon4w.acceleratedrendering.compat.immpt.ImmersivePortalsChecker;
-import com.github.argon4w.acceleratedrendering.compat.immpt.ImmersivePortalsCompat;
+import com.github.argon4w.acceleratedrendering.compat.immpt.*;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,21 +13,24 @@ import qouteall.imm_ptl.core.render.CrossPortalEntityRenderer;
 public class CrossPortalEntityRendererMixin {
 
     @Inject(
-            method = "onEndRenderingEntities(Lcom/mojang/blaze3d/vertex/PoseStack;)V",
-            at=@At("HEAD"), remap = false
+            method = "onBeginRenderingEntities(Lcom/mojang/blaze3d/vertex/PoseStack;)V",
+            at = @At("HEAD"),
+            remap = false
     )
-    private static void onEndRenderingEntitiesHead(PoseStack matrixStack, CallbackInfo ci) {
-        ((ImmersivePortalsChecker) ImmersivePortalsCompat.CHECKER).setRenderingPortalEntities(true);
-//        System.out.println("CrossPortalEntityRendererMixin: setRenderingPortalEntities(true)");
-
+    private static void saveOriginalMatricesBeforePortalRendering(PoseStack matrixStack, CallbackInfo ci) {
+        // 在 IP 修改矩阵之前保存原始矩阵
+        ImmersivePortalsMatrixCache.saveMatrices(
+                RenderSystem.getModelViewMatrix(),
+                RenderSystem.getProjectionMatrix()
+        );
     }
+
     @Inject(
             method = "onEndRenderingEntities(Lcom/mojang/blaze3d/vertex/PoseStack;)V",
-            at=@At("RETURN"), remap = false
+            at = @At("RETURN"),
+            remap = false
     )
-    private static void onEndRenderingEntitiesEnd(PoseStack matrixStack, CallbackInfo ci) {
-        ((ImmersivePortalsChecker) ImmersivePortalsCompat.CHECKER).setRenderingPortalEntities(false);
-//        System.out.println("CrossPortalEntityRendererMixin: setRenderingPortalEntities(false)");
-
+    private static void restoreMatricesAfterPortalRendering(PoseStack matrixStack, CallbackInfo ci) {
+        ImmersivePortalsMatrixCache.clearMatrices();
     }
 }

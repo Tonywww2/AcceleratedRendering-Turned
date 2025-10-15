@@ -79,12 +79,16 @@ legacyForge {
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'mixin.env.remapRefMap', 'true'
+            systemProperty 'mixin.env.refMapRemappingFile', "${projectDir}/build/moddev/artifacts/intermediateToNamed.srg"
         }
 
         server {
             server()
             programArgument '--nogui'
             systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'mixin.env.remapRefMap', 'true'
+            systemProperty 'mixin.env.refMapRemappingFile', "${projectDir}/build/moddev/artifacts/intermediateToNamed.srg"
         }
 
         // This run config launches GameTestServer and runs all registered gametests, then exits.
@@ -93,6 +97,8 @@ legacyForge {
         gameTestServer {
             type = "gameTestServer"
             systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'mixin.env.remapRefMap', 'true'
+            systemProperty 'mixin.env.refMapRemappingFile', "${projectDir}/build/moddev/artifacts/intermediateToNamed.srg"
         }
 
         data {
@@ -147,30 +153,7 @@ obfuscation {
 }
 
 dependencies {
-    // If you wish to declare dependencies against mods, make sure to use the 'mod*' configurations so that they're remapped.
-	// See https://github.com/neoforged/ModDevGradle/blob/main/LEGACY.md#remapping-mod-dependencies for more information.
-	
-    // Example optional mod dependency with JEI
-    // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
-    // modCompileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
-    // modCompileOnly "mezz.jei:jei-${mc_version}-neoforge-api:${jei_version}"
-    // We add the full version to localRuntime, not runtimeOnly, so that we do not publish a dependency on it
-    // modLocalRuntime "mezz.jei:jei-${mc_version}-neoforge:${jei_version}"
 
-    // Example mod dependency using a mod jar from ./libs with a flat dir repository
-    // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
-    // The group id is ignored when searching -- in this case, it is "blank"
-    // modImplementation "blank:coolmod-${mc_version}:${coolmod_version}"
-
-    // Example mod dependency using a file as dependency
-    // modImplementation files("libs/coolmod-${mc_version}-${coolmod_version}.jar")
-
-    // Example project dependency using a sister or child project:
-    // modImplementation project(":myproject")
-
-    // For more info:
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
     modImplementation "io.github.llamalad7:mixinextras-forge:0.4.1"
     modImplementation "maven.modrinth:embeddium:0.3.31+mc1.20.1"
     modImplementation "maven.modrinth:oculus:1.20.1-1.8.0"
@@ -191,6 +174,7 @@ dependencies {
 
     annotationProcessor "org.projectlombok:lombok:1.18.38"
     annotationProcessor 'net.fabricmc:sponge-mixin:0.15.2+mixin.0.8.7'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     annotationProcessor "io.github.llamalad7:mixinextras-common:0.5.0"
 
     jarJar("io.github.llamalad7:mixinextras-forge:0.4.1")  {
@@ -211,7 +195,9 @@ mixin {
     config "${mod_id}.compat.immediatelyfast.mixins.json"
     config "${mod_id}.compat.iris.mixins.json"
     config "${mod_id}.compat.sodium.mixins.json"
+
     config "${mod_id}.core.mixins.json"
+
     config "${mod_id}.feature.entities.mixins.json"
     config "${mod_id}.feature.entitymodelfeature.mixins.json"
     config "${mod_id}.feature.filter.mixins.json"
@@ -223,18 +209,17 @@ mixin {
     config "${mod_id}.feature.touhoulittlemaid.mixins.json"
 }
 
-dependencies {
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-}
-
 jar {
     manifest.attributes([
-            "MixinConfigs": "${mod_id}.compat.curios.mixins.json," +
+            "MixinConfigs":
+                    "${mod_id}.compat.curios.mixins.json," +
                     "${mod_id}.compat.immpt.mixins.json," +
                     "${mod_id}.compat.immediatelyfast.mixins.json," +
                     "${mod_id}.compat.iris.mixins.json," +
                     "${mod_id}.compat.sodium.mixins.json," +
+
                     "${mod_id}.core.mixins.json," +
+
                     "${mod_id}.feature.entities.mixins.json," +
                     "${mod_id}.feature.entitymodelfeature.mixins.json," +
                     "${mod_id}.feature.filter.mixins.json," +

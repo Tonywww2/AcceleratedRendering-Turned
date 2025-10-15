@@ -1,4 +1,4 @@
-package com.github.argon4w.acceleratedrendering.compat.immediatelyfast.mixins.plugin;
+package com.github.argon4w.acceleratedrendering.compat.immpt.mixins.plugin;
 
 import com.github.argon4w.acceleratedrendering.core.utils.ModLoadingUtils;
 import org.objectweb.asm.tree.ClassNode;
@@ -8,11 +8,11 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import java.util.List;
 import java.util.Set;
 
-public class ImmediatelyFastCompatPlugin implements IMixinConfigPlugin {
+public class ImmersivePortalsCompactPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        return ModLoadingUtils.isModLoaded("immediatelyfast");
+        return ModLoadingUtils.isModLoaded("immersive_portals");
     }
 
     @Override
