@@ -1,0 +1,46 @@
+#version 460 core
+// no_cull_pass_through_quad.compute
+// Behavior: pass-through quad output (no culling).
+// Emit polygons for quads as in original pass-through quad shader.
+
+struct Polygon {
+    uint vertex1;
+    uint vertex2;
+    uint vertex3;
+};
+
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+
+// atomic counter used by original pass-through shader (binding must match Java-side)
+layout(binding = 0, offset = 0) uniform atomic_uint indexCounter;
+
+// Uniforms: polygonCount (number of quads' triangle-pairs), vertexOffset (base index offset)
+layout(location = 0) uniform uint polygonCount;
+layout(location = 1) uniform uint vertexOffset;
+
+// Output polygon storage (std430). Binding MUST match Java-side binding used for PolygonsOut.
+layout(std430, binding = 6) restrict writeonly buffer PolygonsOut {
+    Polygon polygonsOut[];
+};
+
+void main() {
+    uint index = gl_GlobalInvocationID.x;
+    if (index >= polygonCount) {
+        return;
+    }
+
+    // For quads, assume they are represented as two triangles or expect the caller to interpret appropriately.
+    // Here we treat each polygon slot as storing 3 indices (triangle). If the pipeline uses quads as
+    // pairs of triangles, the polygonCount should already reflect the triangle count, and the following
+    // is identical to triangle pass-through.
+    uint base = index * 3u;
+    uint index1 = vertexOffset + base + 0u;
+    uint index2 = vertexOffset + base + 1u;
+    uint index3 = vertexOffset + base + 2u;
+
+    atomicCounterAdd(indexCounter, 3u);
+
+    polygonsOut[index].vertex1 = index1;
+    polygonsOut[index].vertex2 = index2;
+    polygonsOut[index].vertex3 = index3;
+}

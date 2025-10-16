@@ -24,6 +24,7 @@ public class ComputeShaderPrograms {
 	public static final ResourceLocation CORE_POS_COLOR_TEX_LIGHT_VERTEX_TRANSFORM_KEY	= ResourceLocationUtils.create("core_pos_color_tex_light_vertex_transform");
 	public static final ResourceLocation CORE_PASS_THROUGH_QUAD_CULLING_KEY				= ResourceLocationUtils.create("core_pass_through_quad_culling");
 	public static final ResourceLocation CORE_PASS_THROUGH_TRIANGLE_CULLING_KEY			= ResourceLocationUtils.create("core_pass_through_triangle_culling");
+	public static final ResourceLocation CORE_NO_CULL_CULLING_KEY						= ResourceLocationUtils.create("core_no_cull_culling");
 	public static final ResourceLocation CORE_BLOCK_MESH_UPLOADING_KEY					= ResourceLocationUtils.create("core_block_mesh_uploading_key");
 	public static final ResourceLocation CORE_ENTITY_MESH_UPLOADING_KEY					= ResourceLocationUtils.create("core_entity_mesh_uploading");
 	public static final ResourceLocation CORE_POS_MESH_UPLOADING_KEY					= ResourceLocationUtils.create("core_pos_mesh_uploading");
@@ -81,6 +82,12 @@ public class ComputeShaderPrograms {
 				ResourceLocationUtils	.create("shaders/core/culling/pass_through_triangle_culling_shader.compute"),
 				BarrierFlags			.SHADER_STORAGE,
 				BarrierFlags			.ATOMIC_COUNTER
+		);
+
+		event.loadComputeShader(
+				CORE_NO_CULL_CULLING_KEY,
+				ResourceLocationUtils	.create("shaders/core/culling/no_cull.compute"),
+				BarrierFlags			.SHADER_STORAGE
 		);
 
 		event.loadComputeShader(

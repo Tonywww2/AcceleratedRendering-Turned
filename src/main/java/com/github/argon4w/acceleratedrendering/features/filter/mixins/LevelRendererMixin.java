@@ -1,5 +1,6 @@
 package com.github.argon4w.acceleratedrendering.features.filter.mixins;
 
+import com.github.argon4w.acceleratedrendering.compat.immpt.ImmersivePortalsCompat;
 import com.github.argon4w.acceleratedrendering.features.entities.AcceleratedEntityRenderingFeature;
 import com.github.argon4w.acceleratedrendering.features.filter.FilterFeature;
 import com.github.argon4w.acceleratedrendering.features.items.AcceleratedItemRenderingFeature;
@@ -16,49 +17,57 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(LevelRenderer.class)
 public class LevelRendererMixin {
 
-	@WrapOperation(
-			method	= "renderLevel",
-			at		= @At(
-					value	= "INVOKE",
-					target	= "Lnet/minecraft/client/renderer/LevelRenderer;renderEntity(Lnet/minecraft/world/entity/Entity;DDDFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;)V"
-			)
-	)
-	public void filterEntity(
-			LevelRenderer		instance,
-			Entity				entity,
-			double				camX,
-			double				camY,
-			double				camZ,
-			float				partialTick,
-			PoseStack			poseStack,
-			MultiBufferSource	bufferSource,
-			Operation<Void>		original
-	) {
-		var pass =	!	FilterFeature.isEnabled				()
-				||	!	FilterFeature.shouldFilterEntities	()
-				||		FilterFeature.testEntity			(entity);
+    @WrapOperation(
+            method = "renderLevel",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/renderer/LevelRenderer;renderEntity(Lnet/minecraft/world/entity/Entity;DDDFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;)V"
+            )
+    )
+    public void filterEntity(
+            LevelRenderer instance,
+            Entity entity,
+            double camX,
+            double camY,
+            double camZ,
+            float partialTick,
+            PoseStack poseStack,
+            MultiBufferSource bufferSource,
+            Operation<Void> original
+    ) {
+        var pass = !FilterFeature.isEnabled()
+                || !FilterFeature.shouldFilterEntities()
+                || FilterFeature.testEntity(entity);
 
-		if (!pass) {
-			AcceleratedEntityRenderingFeature	.useVanillaPipeline();
-			AcceleratedItemRenderingFeature		.useVanillaPipeline();
-			AcceleratedTextRenderingFeature		.useVanillaPipeline();
-		}
+        boolean portalCount =
+                ImmersivePortalsCompat.MOD_LOADED &&
+                ImmersivePortalsCompat.portalRenderCount > 2;
 
-		original.call(
-				instance,
-				entity,
-				camX,
-				camY,
-				camZ,
-				partialTick,
-				poseStack,
-				bufferSource
-		);
+        if (!pass) {
+            AcceleratedEntityRenderingFeature.useVanillaPipeline();
+            AcceleratedItemRenderingFeature.useVanillaPipeline();
+            AcceleratedTextRenderingFeature.useVanillaPipeline();
+        } else if (portalCount) {
+            AcceleratedEntityRenderingFeature.useVanillaPipeline();
+        }
 
-		if (!pass) {
-			AcceleratedEntityRenderingFeature	.resetPipeline();
-			AcceleratedItemRenderingFeature		.resetPipeline();
-			AcceleratedTextRenderingFeature		.resetPipeline();
-		}
-	}
+        original.call(
+                instance,
+                entity,
+                camX,
+                camY,
+                camZ,
+                partialTick,
+                poseStack,
+                bufferSource
+        );
+
+        if (!pass) {
+            AcceleratedEntityRenderingFeature.resetPipeline();
+            AcceleratedItemRenderingFeature.resetPipeline();
+            AcceleratedTextRenderingFeature.resetPipeline();
+        } else if (portalCount) {
+            AcceleratedEntityRenderingFeature.resetPipeline();
+        }
+    }
 }

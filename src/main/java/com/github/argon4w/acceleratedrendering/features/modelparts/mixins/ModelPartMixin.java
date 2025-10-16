@@ -2,6 +2,7 @@ package com.github.argon4w.acceleratedrendering.features.modelparts.mixins;
 
 import com.github.argon4w.acceleratedrendering.AcceleratedRenderingModEntry;
 import com.github.argon4w.acceleratedrendering.core.CoreFeature;
+import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.builders.IAcceleratedVertexConsumer;
 import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.builders.IBufferGraph;
 import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.builders.VertexConsumerExtension;
 import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.renderers.IAcceleratedRenderer;
@@ -91,8 +92,8 @@ public class ModelPartMixin implements IAcceleratedRenderer<Void> {
             int overlay,
             int color
     ) {
-        var extension = vertexConsumer.getAccelerated();
-        var mesh = meshes.get(extension);
+        IAcceleratedVertexConsumer extension = vertexConsumer.getAccelerated();
+        IMesh mesh = meshes.get(extension);
 
         extension.beginTransform(transform, normal);
 
