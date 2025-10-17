@@ -82,6 +82,9 @@ public class FeatureConfig {
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> curiosItemFilterValues;
 
     public final ForgeConfigSpec.ConfigValue<FeatureStatus> immptCompatFeatureStatus;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> immptCompatEntity;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> immptCompatItem;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> immptCompatText;
 
     static {
         Pair<FeatureConfig, ForgeConfigSpec> pair = new ForgeConfigSpec.Builder().configure(FeatureConfig::new);
@@ -513,11 +516,27 @@ public class FeatureConfig {
                 .push("immpt_compatibility");
 
         immptCompatFeatureStatus = builder
-                .comment("- DISABLED: Accelerated Rendering will not compact with Immersive Portal..")
+                .comment("- DISABLED: Accelerated Rendering will not compact with Immersive Portal.")
                 .comment("- ENABLED: Accelerated Rendering will try to compact with Immersive Portals.")
                 .translation("acceleratedrendering.configuration.immpt_compatibility.feature_status")
                 .defineEnum("feature_status", FeatureStatus.ENABLED);
 
+        immptCompatEntity = builder
+                .translation("acceleratedrendering.configuration.immpt_compatibility.compact_entity")
+                .defineEnum("compact_entity", FeatureStatus.ENABLED);
+
+        immptCompatItem = builder
+                .translation("acceleratedrendering.configuration.immpt_compatibility.compact_item")
+                .defineEnum("compact_item", FeatureStatus.DISABLED);
+
+        immptCompatText = builder
+                .translation("acceleratedrendering.configuration.immpt_compatibility.compact_text")
+                .defineEnum("compact_text", FeatureStatus.DISABLED);
+
         builder.pop();
+    }
+
+    public static boolean isConfigEnabled(FeatureStatus status) {
+        return status == FeatureStatus.ENABLED;
     }
 }

@@ -1,6 +1,8 @@
 package com.github.argon4w.acceleratedrendering.features.filter.mixins;
 
 import com.github.argon4w.acceleratedrendering.compat.immpt.ImmersivePortalsCompat;
+import com.github.argon4w.acceleratedrendering.configs.FeatureConfig;
+import com.github.argon4w.acceleratedrendering.configs.FeatureStatus;
 import com.github.argon4w.acceleratedrendering.features.entities.AcceleratedEntityRenderingFeature;
 import com.github.argon4w.acceleratedrendering.features.filter.FilterFeature;
 import com.github.argon4w.acceleratedrendering.features.items.AcceleratedItemRenderingFeature;
@@ -41,14 +43,23 @@ public class LevelRendererMixin {
 
         boolean portalCount =
                 ImmersivePortalsCompat.MOD_LOADED &&
-                ImmersivePortalsCompat.portalRenderCount > 2;
+                        FeatureConfig.isConfigEnabled(FeatureConfig.CONFIG.immptCompatFeatureStatus.get()) &&
+                        ImmersivePortalsCompat.portalRenderCount > 2;
 
         if (!pass) {
             AcceleratedEntityRenderingFeature.useVanillaPipeline();
             AcceleratedItemRenderingFeature.useVanillaPipeline();
             AcceleratedTextRenderingFeature.useVanillaPipeline();
         } else if (portalCount) {
-            AcceleratedEntityRenderingFeature.useVanillaPipeline();
+            if (FeatureConfig.isConfigEnabled(FeatureConfig.CONFIG.immptCompatEntity.get()))
+                AcceleratedEntityRenderingFeature.useVanillaPipeline();
+
+            if (FeatureConfig.isConfigEnabled(FeatureConfig.CONFIG.immptCompatItem.get()))
+                AcceleratedItemRenderingFeature.useVanillaPipeline();
+
+            if (FeatureConfig.isConfigEnabled(FeatureConfig.CONFIG.immptCompatText.get()))
+                AcceleratedTextRenderingFeature.useVanillaPipeline();
+
         }
 
         original.call(
@@ -67,7 +78,14 @@ public class LevelRendererMixin {
             AcceleratedItemRenderingFeature.resetPipeline();
             AcceleratedTextRenderingFeature.resetPipeline();
         } else if (portalCount) {
-            AcceleratedEntityRenderingFeature.resetPipeline();
+            if (FeatureConfig.isConfigEnabled(FeatureConfig.CONFIG.immptCompatEntity.get()))
+                AcceleratedEntityRenderingFeature.resetPipeline();
+
+            if (FeatureConfig.isConfigEnabled(FeatureConfig.CONFIG.immptCompatItem.get()))
+                AcceleratedItemRenderingFeature.resetPipeline();
+
+            if (FeatureConfig.isConfigEnabled(FeatureConfig.CONFIG.immptCompatText.get()))
+                AcceleratedTextRenderingFeature.resetPipeline();
         }
     }
 }
