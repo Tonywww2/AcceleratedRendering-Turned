@@ -1,5 +1,6 @@
 package com.github.argon4w.acceleratedrendering.core.utils;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
@@ -7,6 +8,7 @@ import org.joml.Vector3f;
 import org.joml.Vector4i;
 
 @Getter
+@EqualsAndHashCode
 public class Vertex {
 
 	private final Vector3f position;

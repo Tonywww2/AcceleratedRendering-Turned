@@ -3,6 +3,7 @@ package com.github.argon4w.acceleratedrendering.core.meshes.collectors;
 import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.builders.IAcceleratedVertexConsumer;
 import com.github.argon4w.acceleratedrendering.core.buffers.memory.IMemoryLayout;
 import com.github.argon4w.acceleratedrendering.core.utils.ByteBufferBuilder;
+import com.github.argon4w.acceleratedrendering.core.meshes.identity.IMeshData;
 import com.github.argon4w.acceleratedrendering.core.utils.CullerUtils;
 import com.github.argon4w.acceleratedrendering.core.utils.Vertex;
 import com.mojang.blaze3d.platform.NativeImage;
@@ -30,6 +31,7 @@ public class CulledMeshCollector implements VertexConsumer, IMeshCollector {
 		this.vertexIndex	= -1;
 	}
 
+	@Override
 	public void flush() {
 		if (vertexIndex >= polygonSize - 1) {
 			vertexIndex = -1;
@@ -164,6 +166,11 @@ public class CulledMeshCollector implements VertexConsumer, IMeshCollector {
 		polygon[vertexIndex].getNormal().y = pNormalY;
 		polygon[vertexIndex].getNormal().z = pNormalZ;
 		return this;
+	}
+
+	@Override
+	public IMeshData getData() {
+		return meshCollector.getData();
 	}
 
 	@Override

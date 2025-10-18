@@ -1,13 +1,12 @@
 package com.github.argon4w.acceleratedrendering.features.modelparts.mixins;
 
-import com.github.argon4w.acceleratedrendering.AcceleratedRenderingModEntry;
 import com.github.argon4w.acceleratedrendering.core.CoreFeature;
-import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.builders.IAcceleratedVertexConsumer;
 import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.builders.IBufferGraph;
 import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.builders.VertexConsumerExtension;
 import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.renderers.IAcceleratedRenderer;
 import com.github.argon4w.acceleratedrendering.core.meshes.IMesh;
 import com.github.argon4w.acceleratedrendering.core.meshes.collectors.CulledMeshCollector;
+import com.github.argon4w.acceleratedrendering.core.meshes.identity.IMeshData;
 import com.github.argon4w.acceleratedrendering.features.entities.AcceleratedEntityRenderingFeature;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -35,15 +34,17 @@ public class ModelPartMixin implements IAcceleratedRenderer<Void> {
     @Final
     private List<ModelPart.Cube> cubes;
 
-    @Unique
-    private final Map<IBufferGraph, IMesh> meshes = new Object2ObjectOpenHashMap<>();
+	@Unique
+    private final	Map<IBufferGraph,	IMesh>	meshes = new Object2ObjectOpenHashMap<>();
+	@Unique
+    private final	Map<IMeshData,		IMesh>	merges = new Object2ObjectOpenHashMap<>();
 
     @Inject(
             method = "compile",
             at = @At("HEAD"),
             cancellable = true
     )
-    private void compileFast(
+    public void compileFast(
             PoseStack.Pose pPose,
             VertexConsumer pBuffer,
             int pPackedLight,
@@ -55,7 +56,7 @@ public class ModelPartMixin implements IAcceleratedRenderer<Void> {
             CallbackInfo ci
     ) {
         var extension = pBuffer.getAccelerated();
-        
+
         if (AcceleratedEntityRenderingFeature.isEnabled() &&
                 AcceleratedEntityRenderingFeature.shouldUseAcceleratedPipeline() &&
                 (CoreFeature.isRenderingLevel() ||
@@ -92,8 +93,8 @@ public class ModelPartMixin implements IAcceleratedRenderer<Void> {
             int overlay,
             int color
     ) {
-        IAcceleratedVertexConsumer extension = vertexConsumer.getAccelerated();
-        IMesh mesh = meshes.get(extension);
+        var extension = vertexConsumer.getAccelerated();
+        var mesh = meshes.get(extension);
 
         extension.beginTransform(transform, normal);
 
@@ -140,18 +141,27 @@ public class ModelPartMixin implements IAcceleratedRenderer<Void> {
 
         culledMeshCollector.flush();
 
-        mesh = AcceleratedEntityRenderingFeature
-                .getMeshType()
-                .getBuilder()
-                .build(culledMeshCollector);
+		var data	= culledMeshCollector	.getData	();
+		var buffer	= culledMeshCollector	.getBuffer	();
+		mesh		= merges				.get		(data);
 
-        meshes.put(extension, mesh);
-        mesh.write(
-                extension,
-                color,
-                light,
-                overlay
-        );
+		if (mesh != null) {
+			buffer.close();
+		} else {
+			mesh = AcceleratedEntityRenderingFeature
+					.getMeshType()
+					.getBuilder	()
+					.build		(culledMeshCollector);
+		}
+
+		meshes	.put	(extension, mesh);
+		merges	.put	(data,		mesh);
+		mesh	.write	(
+				extension,
+				color,
+				light,
+				overlay
+		);
 
         extension.endTransform();
     }

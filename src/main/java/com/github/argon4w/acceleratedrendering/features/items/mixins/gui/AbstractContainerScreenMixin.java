@@ -1,9 +1,6 @@
 package com.github.argon4w.acceleratedrendering.features.items.mixins.gui;
 
-import com.github.argon4w.acceleratedrendering.core.CoreFeature;
-import com.github.argon4w.acceleratedrendering.features.items.AcceleratedItemRenderingFeature;
-import com.github.argon4w.acceleratedrendering.features.items.GuiBatchingController;
-import net.minecraft.client.Minecraft;
+import com.github.argon4w.acceleratedrendering.features.items.gui.GuiBatchingController;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,7 +22,7 @@ public abstract class AbstractContainerScreenMixin {
 			float			partialTick,
 			CallbackInfo	ci
 	) {
-		GuiBatchingController.startBatching();
+		GuiBatchingController.INSTANCE.startBatching();
 	}
 
 	@Inject(
@@ -43,7 +40,7 @@ public abstract class AbstractContainerScreenMixin {
 			float			partialTick,
 			CallbackInfo	ci
 	) {
-		GuiBatchingController.flushBatching(guiGraphics);
+		GuiBatchingController.INSTANCE.flushBatching(guiGraphics);
 	}
 
 	@Inject(
@@ -59,9 +56,7 @@ public abstract class AbstractContainerScreenMixin {
 			int				color,
 			CallbackInfo	ci
 	) {
-		if (CoreFeature.isGuiBatching()) {
-			AcceleratedItemRenderingFeature.GUI_OVERLAY_TARGET.bindWrite(false);
-		}
+		GuiBatchingController.INSTANCE.useOverlayTarget();
 	}
 
 	@Inject(
@@ -77,8 +72,6 @@ public abstract class AbstractContainerScreenMixin {
 			int				color,
 			CallbackInfo	ci
 	) {
-		if (CoreFeature.isGuiBatching()) {
-			Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
-		}
+		GuiBatchingController.INSTANCE.resetOverlayTarget();
 	}
 }
