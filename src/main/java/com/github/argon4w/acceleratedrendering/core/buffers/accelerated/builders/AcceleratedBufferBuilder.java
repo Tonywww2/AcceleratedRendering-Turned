@@ -342,8 +342,6 @@ public class AcceleratedBufferBuilder extends DefaultedVertexConsumer implements
         }
     }
 
-// ... 现有代码 ...
-
     @Override
     public void beginTransform(Matrix4f transform, Matrix3f normal) {
         if (CoreFeature.shouldCacheIdenticalPose() && transform.equals(cachedTransform) && normal.equals(cachedNormal)) {
@@ -363,17 +361,9 @@ public class AcceleratedBufferBuilder extends DefaultedVertexConsumer implements
             throw new IllegalStateException("Sharing buffer address is invalid: " + sharingAddress);
         }
 
-        // 尝试写入，如果失败，记录错误或跳过
-        try {
-            SHARING_TRANSFORM.putMatrix4f(sharingAddress, transform);
-            SHARING_NORMAL.putMatrix3f(sharingAddress, normal);
-        } catch (Exception e) {
-            // 日志错误，避免崩溃
-            System.err.println("Failed to write to sharing buffer at address: " + sharingAddress + ", error: " + e.getMessage());
-            // 可选：重置状态或跳过
-            activeSharing = -1;
-            cachedSharing = -1;
-        }
+        SHARING_TRANSFORM.putMatrix4f(sharingAddress, transform);
+        SHARING_NORMAL.putMatrix3f(sharingAddress, normal);
+
     }
 
     @Override

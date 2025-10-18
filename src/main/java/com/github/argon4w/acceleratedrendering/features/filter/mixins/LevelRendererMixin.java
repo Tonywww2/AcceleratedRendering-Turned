@@ -2,7 +2,6 @@ package com.github.argon4w.acceleratedrendering.features.filter.mixins;
 
 import com.github.argon4w.acceleratedrendering.compat.immpt.ImmersivePortalsCompat;
 import com.github.argon4w.acceleratedrendering.configs.FeatureConfig;
-import com.github.argon4w.acceleratedrendering.configs.FeatureStatus;
 import com.github.argon4w.acceleratedrendering.features.entities.AcceleratedEntityRenderingFeature;
 import com.github.argon4w.acceleratedrendering.features.filter.FilterFeature;
 import com.github.argon4w.acceleratedrendering.features.items.AcceleratedItemRenderingFeature;
