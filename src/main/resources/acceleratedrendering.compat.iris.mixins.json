@@ -7,7 +7,6 @@
   "client": [
     "acceleratedrendering.AcceleratedBufferBuilderMixin",
     "acceleratedrendering.AcceleratedBufferSourceMixin",
-    "acceleratedrendering.AcceleratedBufferSourcesMixin",
     "acceleratedrendering.AcceleratedRenderingModEntryMixin",
     "acceleratedrendering.CoreBuffersMixin",
     "acceleratedrendering.FlattenMeshInfoCacheMixin",
@@ -23,6 +22,7 @@
     "iris.IrisVertexFormatsMixin",
     "iris.ModelToEntityVertexSerializerMixin",
     "iris.ShadowRendererMixin",
+    "vanilla.BufferBuilderMixin",
     "vanilla.LevelRendererMixin"
   ],
   "injectors": {

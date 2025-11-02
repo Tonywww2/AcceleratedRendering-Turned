@@ -38,13 +38,13 @@ public class AcceleratedBufferSource implements IAcceleratedBufferSource {
     private AcceleratedRingBuffers.Buffers currentBuffer;
     private boolean used;
 
-    public AcceleratedBufferSource(IBufferEnvironment bufferEnvironment) {
-        this.environment = bufferEnvironment;
-        this.ringBuffers = new AcceleratedRingBuffers(this.environment);
-        this.currentBuffer = this.ringBuffers.get(false);
-        this.buffers = ObjectLinkedOpenHashSet.of(this.currentBuffer);
-        this.activeBuilders = new Object2ObjectOpenHashMap<>();
-        this.activeLayers = new IntAVLTreeSet();
+	public AcceleratedBufferSource(IBufferEnvironment bufferEnvironment) {
+		this.environment	= bufferEnvironment;
+		this.activeBuilders	= new Object2ObjectOpenHashMap<>	();
+		this.activeLayers	= new IntAVLTreeSet					();
+		this.ringBuffers	= new AcceleratedRingBuffers		(this.environment);
+		this.currentBuffer	= this.ringBuffers			.get	(false);
+		this.buffers		= ObjectLinkedOpenHashSet	.of		(this.currentBuffer);
 
         this.used = false;
     }
