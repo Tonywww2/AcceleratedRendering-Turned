@@ -35,19 +35,23 @@ public class AcceleratedBufferSource implements IAcceleratedBufferSource {
     private final Map<LayerKey, AcceleratedBufferBuilder> activeBuilders;
     private final IntSet activeLayers;
 
-    private AcceleratedRingBuffers.Buffers currentBuffer;
-    private boolean used;
+	private					AcceleratedRingBuffers.Buffers			currentBuffer;
+	private 				boolean									used;
+	private					int										barriers;
 
 	public AcceleratedBufferSource(IBufferEnvironment bufferEnvironment) {
 		this.environment	= bufferEnvironment;
-		this.activeBuilders	= new Object2ObjectOpenHashMap<>	();
-		this.activeLayers	= new IntAVLTreeSet					();
 		this.ringBuffers	= new AcceleratedRingBuffers		(this.environment);
-		this.currentBuffer	= this.ringBuffers			.get	(false);
-		this.buffers		= ObjectLinkedOpenHashSet	.of		(this.currentBuffer);
+		this.buffers		= new ObjectLinkedOpenHashSet	<>	();
+		this.activeBuilders	= new Object2ObjectOpenHashMap	<>	();
+		this.activeLayers	= new IntAVLTreeSet					();
 
-        this.used = false;
-    }
+		this.currentBuffer	= this.ringBuffers.get(false);
+		this.used			= false;
+		this.barriers		= GL_SHADER_STORAGE_BARRIER_BIT;
+
+		this.buffers.add(this.currentBuffer);
+	}
 
     public void delete() {
         ringBuffers.delete();
@@ -127,21 +131,22 @@ public class AcceleratedBufferSource implements IAcceleratedBufferSource {
             return;
         }
 
-        for (var buffer : buffers) {
-            var builders = buffer.getBuilders();
-            var program = glGetInteger(GL_CURRENT_PROGRAM);
-            var barrier = 0;
+		for (var buffer : buffers) {
+			var builders	= buffer.getBuilders();
+			var program		= glGetInteger		(GL_CURRENT_PROGRAM);
 
             if (builders.isEmpty()) {
                 continue;
             }
 
-            environment.getImmediateMeshBuffer().bindBase(GL_SHADER_STORAGE_BUFFER, MeshUploadingProgramDispatcher.SPARSE_MESH_BUFFER_INDEX);
-            environment.selectMeshUploadingProgramDispatcher().dispatch(builders.values(), buffer);
-            environment.selectTransformProgramDispatcher().dispatch(builders.values());
+			environment.getImmediateMeshBuffer				().bindBase	(GL_SHADER_STORAGE_BUFFER,	MeshUploadingProgramDispatcher.SPARSE_MESH_BUFFER_INDEX);
+			environment.selectMeshUploadingProgramDispatcher().dispatch	(builders.values(),			buffer);
+			environment.selectTransformProgramDispatcher	().dispatch	(builders.values());
 
-            for (var layerKey : builders.keySet()) {
-                var builder = builders.get(layerKey);
+			glMemoryBarrier(barriers);
+
+			for (var layerKey : builders.keySet()) {
+				var builder = builders.get(layerKey);
 
                 if (builder.isEmpty()) {
                     continue;
@@ -165,34 +170,37 @@ public class AcceleratedBufferSource implements IAcceleratedBufferSource {
                         .get(drawType)
                         .add(drawContext);
 
-                barrier |= environment.selectProcessingProgramDispatcher(renderType.mode()).dispatch(builder);
-                barrier |= builder.getCullingProgramDispatcher().dispatch(builder);
-            }
+				barriers |= builder.getPolygonProgramDispatcher().dispatch(builder);
+				barriers |= builder.getCullingProgramDispatcher().dispatch(builder);
+			}
 
-            glMemoryBarrier(barrier);
-            glUseProgram(program);
-        }
-    }
+			glUseProgram(program);
+		}
+	}
 
     public void drawBuffers(LayerDrawType drawType) {
         if (!used) {
             return;
         }
 
-        for (int layerIndex : activeLayers) {
-            for (var buffer : buffers) {
-                var function = buffer.getFunctions().getOrDefault(layerIndex, EmptyLayerFunction.INSTANCE);
-                var contexts = buffer.getLayers().getOrDefault(layerIndex, EmptyLayerStorage.INSTANCE).get(drawType);
+		glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT
+				|		GL_ELEMENT_ARRAY_BARRIER_BIT
+				|		GL_COMMAND_BARRIER_BIT
+		);
+
+		for (		int layerIndex	: activeLayers) {
+			for (	var buffer		: buffers) {
+				var function = buffer.getFunctions	().getOrDefault(layerIndex, EmptyLayerFunction	.INSTANCE);
+				var contexts = buffer.getLayers		().getOrDefault(layerIndex, EmptyLayerStorage	.INSTANCE).get(drawType);
 
                 if (contexts.isEmpty()) {
                     continue;
                 }
 
-                glMemoryBarrier(GL_ELEMENT_ARRAY_BARRIER_BIT | GL_COMMAND_BARRIER_BIT);
-                BufferUploader.invalidate();
-                buffer.bindDrawBuffers();
-                contexts.prepare();
-                function.runBefore();
+				BufferUploader	.invalidate		();
+				buffer			.bindDrawBuffers();
+				contexts		.prepare		();
+				function		.runBefore		();
 
                 for (var drawContext : contexts) {
                     var renderType = drawContext.getRenderType();
