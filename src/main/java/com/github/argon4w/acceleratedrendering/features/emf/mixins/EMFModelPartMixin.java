@@ -30,157 +30,160 @@ import java.util.Map;
 
 @Pseudo
 @ExtensionMethod(VertexConsumerExtension.class)
-@Mixin			(EMFModelPart			.class)
+@Mixin(EMFModelPart.class)
 public class EMFModelPartMixin extends ModelPartMixin implements IEMFModelVariant {
 
-	@Unique private final	Int2ReferenceMap<Map<IBufferGraph,	IMesh>>	emfMeshes	= new Int2ReferenceOpenHashMap<>();
-	@Unique private final	Int2ReferenceMap<Map<IMeshData,		IMesh>>	emfMerges	= new Int2ReferenceOpenHashMap<>();
-	@Unique private			int											emfVariant	= Integer.MIN_VALUE;
+    @Unique
+    private final Int2ReferenceMap<Map<IBufferGraph, IMesh>> emfMeshes = new Int2ReferenceOpenHashMap<>();
+    @Unique
+    private final Int2ReferenceMap<Map<IMeshData, IMesh>> emfMerges = new Int2ReferenceOpenHashMap<>();
+    @Unique
+    private int emfVariant = Integer.MIN_VALUE;
 
-	@Inject(
-			method		= "compile",
-			at			= @At("HEAD"),
-			cancellable	= true
-	)
-	public void compileFast(
-			PoseStack.Pose	pPose,
-			VertexConsumer	pBuffer,
-			int				pPackedLight,
-			int				pPackedOverlay,
-			float			red,
-			float			green,
-			float			blue,
-			float			alpha,
-			CallbackInfo	ci
-	) {
-		var extension = pBuffer.getAccelerated();
+    @Inject(
+            method = "compile",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    public void compileFast(
+            PoseStack.Pose pPose,
+            VertexConsumer pBuffer,
+            int pPackedLight,
+            int pPackedOverlay,
+            float red,
+            float green,
+            float blue,
+            float alpha,
+            CallbackInfo ci
+    ) {
+        var extension = pBuffer.getAccelerated();
 
-		if (			AcceleratedEntityRenderingFeature	.isEnabled						()
-				&&		AcceleratedEntityRenderingFeature	.shouldUseAcceleratedPipeline	()
-				&&	(	CoreFeature							.isRenderingLevel				()
-				||	(	CoreFeature							.isRenderingGui					()
-				&&		AcceleratedEntityRenderingFeature	.shouldAccelerateInGui			()))
-				&&		extension							.isAccelerated					()
-		) {
-			ci			.cancel		();
-			extension	.doRender	(
-					this,
-					null,
-					pPose.pose	(),
-					pPose.normal(),
-					pPackedLight,
-					pPackedOverlay,
-					FastColor.ARGB32.color(
-							(int) (alpha	* 255.0f),
-							(int) (red		* 255.0f),
-							(int) (green	* 255.0f),
-							(int) (blue		* 255.0f)
-					)
-			);
-		}
-	}
+        if (AcceleratedEntityRenderingFeature.isEnabled()
+                && AcceleratedEntityRenderingFeature.shouldUseAcceleratedPipeline()
+                && (CoreFeature.isRenderingLevel()
+                || (CoreFeature.isRenderingGui()
+                && AcceleratedEntityRenderingFeature.shouldAccelerateInGui()))
+                && extension.isAccelerated()
+        ) {
+            ci.cancel();
+            extension.doRender(
+                    this,
+                    null,
+                    pPose.pose(),
+                    pPose.normal(),
+                    pPackedLight,
+                    pPackedOverlay,
+                    FastColor.ARGB32.color(
+                            (int) (alpha * 255.0f),
+                            (int) (red * 255.0f),
+                            (int) (green * 255.0f),
+                            (int) (blue * 255.0f)
+                    )
+            );
+        }
+    }
 
-	@Unique
-	@Override
-	public void render(
-			VertexConsumer	vertexConsumer,
-			Void			context,
-			Matrix4f transform,
-			Matrix3f normal,
-			int				light,
-			int				overlay,
-			int				color
-	) {
-		var meshes = emfMeshes.get(emfVariant);
-		var merges = emfMerges.get(emfVariant);
+    @Unique
+    @Override
+    public void render(
+            VertexConsumer vertexConsumer,
+            Void context,
+            Matrix4f transform,
+            Matrix3f normal,
+            int light,
+            int overlay,
+            int color
+    ) {
+        var meshes = emfMeshes.get(emfVariant);
+        var merges = emfMerges.get(emfVariant);
 
-		if (		meshes == null
-				||	merges == null
-		) {
-			meshes = new Object2ObjectOpenHashMap<>();
-			merges = new Object2ObjectOpenHashMap<>();
+        if (meshes == null
+                || merges == null
+        ) {
+            meshes = new Object2ObjectOpenHashMap<>();
+            merges = new Object2ObjectOpenHashMap<>();
 
-			emfMeshes.put(emfVariant, meshes);
-			emfMerges.put(emfVariant, merges);
-		}
+            emfMeshes.put(emfVariant, meshes);
+            emfMerges.put(emfVariant, merges);
+        }
 
-		var extension	= vertexConsumer.getAccelerated	();
-		var mesh		= meshes		.get			(extension);
+        var extension = vertexConsumer.getAccelerated();
+        var mesh = meshes.get(extension);
 
-		extension.beginTransform(transform, normal);
+        extension.beginTransform(transform, normal);
 
-		if (mesh != null) {
-			mesh.write(
-					extension,
-					color,
-					light,
-					overlay
-			);
+        if (mesh != null) {
+            mesh.write(
+                    extension,
+                    color,
+                    light,
+                    overlay
+            );
 
-			extension.endTransform();
-			return;
-		}
+            extension.endTransform();
+            return;
+        }
 
-		var culledMeshCollector	= new CulledMeshCollector	(extension);
-		var meshBuilder			= extension.decorate		(culledMeshCollector);
+        var culledMeshCollector = new CulledMeshCollector(extension);
+        var meshBuilder = extension.decorate(culledMeshCollector);
 
-		for (var cube : cubes) {
-			for (var polygon : cube.polygons) {
-				var polygonNormal = polygon.normal;
+        for (var cube : cubes) {
+            for (var polygon : cube.polygons) {
+                var polygonNormal = polygon.normal;
 
-				for (var vertex : polygon.vertices) {
-					var vertexPosition = vertex.pos;
+                for (var vertex : polygon.vertices) {
+                    var vertexPosition = vertex.pos;
 
-					meshBuilder.vertex(
-							vertexPosition.x / 16.0f,
-							vertexPosition.y / 16.0f,
-							vertexPosition.z / 16.0f,
-							1.0f,
-							1.0f,
-							1.0f,
-							1.0f,
-							vertex.u,
-							vertex.v,
-							overlay,
-							0,
-							polygonNormal.x,
-							polygonNormal.y,
-							polygonNormal.z
-					);
-				}
-			}
-		}
+                    meshBuilder.vertex(
+                            vertexPosition.x / 16.0f,
+                            vertexPosition.y / 16.0f,
+                            vertexPosition.z / 16.0f,
+                            1.0f,
+                            1.0f,
+                            1.0f,
+                            1.0f,
+                            vertex.u,
+                            vertex.v,
+                            overlay,
+                            0,
+                            polygonNormal.x,
+                            polygonNormal.y,
+                            polygonNormal.z
+                    );
+                }
+            }
+        }
 
-		culledMeshCollector.flush();
+        culledMeshCollector.flush();
 
-		var data	= culledMeshCollector	.getData	();
-		var buffer	= culledMeshCollector	.getBuffer	();
-		mesh		= merges				.get		(data);
+        var data = culledMeshCollector.getData();
+        var buffer = culledMeshCollector.getBuffer();
+        mesh = merges.get(data);
 
-		if (mesh != null) {
-			buffer.close();
-		} else {
-			mesh = AcceleratedEntityRenderingFeature
-					.getMeshType()
-					.getBuilder	()
-					.build		(culledMeshCollector);
-		}
+        if (mesh != null) {
+            buffer.close();
+        } else {
+            mesh = AcceleratedEntityRenderingFeature
+                    .getMeshType()
+                    .getBuilder()
+                    .build(culledMeshCollector);
+        }
 
-		meshes	.put	(extension, mesh);
-		merges	.put	(data,		mesh);
-		mesh	.write	(
-				extension,
-				color,
-				light,
-				overlay
-		);
+        meshes.put(extension, mesh);
+        merges.put(data, mesh);
+        mesh.write(
+                extension,
+                color,
+                light,
+                overlay
+        );
 
-		extension.endTransform();
-	}
+        extension.endTransform();
+    }
 
-	@Unique
-	@Override
-	public void setCurrentVariant(int variant) {
-		emfVariant = variant;
-	}
+    @Unique
+    @Override
+    public void setCurrentVariant(int variant) {
+        emfVariant = variant;
+    }
 }
