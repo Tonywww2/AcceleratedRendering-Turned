@@ -7,7 +7,7 @@ import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.builders
 import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.renderers.IAcceleratedRenderer;
 import com.github.argon4w.acceleratedrendering.core.meshes.IMesh;
 import com.github.argon4w.acceleratedrendering.core.meshes.collectors.CulledMeshCollector;
-import com.github.argon4w.acceleratedrendering.core.meshes.data.IMeshData;
+import com.github.argon4w.acceleratedrendering.core.meshes.data.MeshData;
 import com.github.argon4w.acceleratedrendering.features.entities.AcceleratedEntityRenderingFeature;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -28,9 +28,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("unchecked")
-@ExtensionMethod(VertexConsumerExtension.class)
-@Mixin(ModelPart.class)
+@ExtensionMethod(value = VertexConsumerExtension.class)
+@Mixin(value = ModelPart.class, priority = 800)
 public class ModelPartMixin implements IAcceleratedRenderer<Void> {
 
     @Shadow
@@ -40,7 +39,7 @@ public class ModelPartMixin implements IAcceleratedRenderer<Void> {
     @Unique
     private final Map<IBufferGraph, IMesh> meshes = new Object2ObjectOpenHashMap<>();
     @Unique
-    private final Map<IMeshData, IMesh> merges = new Object2ObjectOpenHashMap<>();
+    private final Map<MeshData, IMesh> merges = new Object2ObjectOpenHashMap<>();
 
     @Inject(
             method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V",
@@ -85,48 +84,48 @@ public class ModelPartMixin implements IAcceleratedRenderer<Void> {
         }
     }
 
-	/*@Inject(
-			method		= "compile",
-			at			= @At("HEAD"),
-			cancellable	= true
-	)
-	public void compileFast(
-			PoseStack.Pose	pPose,
-			VertexConsumer	pBuffer,
-			int				pPackedLight,
-			int				pPackedOverlay,
-			float			red,
-			float			green,
-			float			blue,
-			float			alpha,
-			CallbackInfo	ci
-	) {
-		var extension = pBuffer.getAccelerated();
+    @Inject(
+            method = "compile",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    public void compileFast(
+            PoseStack.Pose pPose,
+            VertexConsumer pBuffer,
+            int pPackedLight,
+            int pPackedOverlay,
+            float red,
+            float green,
+            float blue,
+            float alpha,
+            CallbackInfo ci
+    ) {
+        var extension = pBuffer.getAccelerated();
 
-		if (			AcceleratedEntityRenderingFeature	.isEnabled						()
-				&&		AcceleratedEntityRenderingFeature	.shouldUseAcceleratedPipeline	()
-				&&	(	CoreFeature							.isRenderingLevel				()
-				||	(	CoreFeature							.isRenderingGui					()
-				&&		AcceleratedEntityRenderingFeature	.shouldAccelerateInGui			()))
-				&&		extension							.isAccelerated					()
-		) {
-			ci			.cancel		();
-			extension	.doRender	(
-					this,
-					null,
-					pPose.pose	(),
-					pPose.normal(),
-					pPackedLight,
-					pPackedOverlay,
-					FastColor.ARGB32.color(
-							(int) (alpha	* 255.0f),
-							(int) (red		* 255.0f),
-							(int) (green	* 255.0f),
-							(int) (blue		* 255.0f)
-					)
-			);
-		}
-	}*/
+        if (AcceleratedEntityRenderingFeature.isEnabled()
+                && AcceleratedEntityRenderingFeature.shouldUseAcceleratedPipeline()
+                && (CoreFeature.isRenderingLevel()
+                || (CoreFeature.isRenderingGui()
+                && AcceleratedEntityRenderingFeature.shouldAccelerateInGui()))
+                && extension.isAccelerated()
+        ) {
+            ci.cancel();
+            extension.doRender(
+                    this,
+                    null,
+                    pPose.pose(),
+                    pPose.normal(),
+                    pPackedLight,
+                    pPackedOverlay,
+                    FastColor.ARGB32.color(
+                            (int) (alpha * 255.0f),
+                            (int) (red * 255.0f),
+                            (int) (green * 255.0f),
+                            (int) (blue * 255.0f)
+                    )
+            );
+        }
+    }
 
     @Unique
     @Override
@@ -214,6 +213,7 @@ public class ModelPartMixin implements IAcceleratedRenderer<Void> {
     }
 
     @Unique
+    @SuppressWarnings("unchecked")
     private static void renderFast(
             ModelPart modelPart,
             PoseStack poseStack,
@@ -237,11 +237,13 @@ public class ModelPartMixin implements IAcceleratedRenderer<Void> {
         modelPart.translateAndRotate(poseStack);
 
         if (!modelPart.skipDraw) {
+            var last = poseStack.last();
+
             extension.doRender(
                     (IAcceleratedRenderer<Void>) (Object) modelPart,
                     null,
-                    poseStack.last().pose(),
-                    poseStack.last().normal(),
+                    last.pose(),
+                    last.normal(),
                     packedLight,
                     packedOverlay,
                     packedColor

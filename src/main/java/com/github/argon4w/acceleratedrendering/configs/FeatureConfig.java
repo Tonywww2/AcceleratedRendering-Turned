@@ -7,7 +7,7 @@ import com.github.argon4w.acceleratedrendering.core.backends.states.viewports.Vi
 import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.layers.storage.LayerStorageType;
 import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.pools.meshes.MeshInfoCacheType;
 import com.github.argon4w.acceleratedrendering.core.meshes.MeshType;
-import com.github.argon4w.acceleratedrendering.core.meshes.data.MeshMergeType;
+import com.github.argon4w.acceleratedrendering.core.meshes.data.cache.MeshDataCacheType;
 import com.github.argon4w.acceleratedrendering.features.filter.FilterType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -20,20 +20,20 @@ public class FeatureConfig {
     public static final FeatureConfig CONFIG;
     public static final ForgeConfigSpec SPEC;
 
-	public			final	ForgeConfigSpec.IntValue									corePooledRingBufferSize;
-	public			final	ForgeConfigSpec.IntValue									corePooledBatchingSize;
-	public			final	ForgeConfigSpec.IntValue									coreCachedImageSize;
-	public			final	ForgeConfigSpec.IntValue									coreDynamicUVResolution;
-	public			final	ForgeConfigSpec.ConfigValue<FeatureStatus>					coreDebugContextEnabled;
-	public			final	ForgeConfigSpec.ConfigValue<FeatureStatus>					coreForceTranslucentAcceleration;
-	public			final	ForgeConfigSpec.ConfigValue<FeatureStatus>					coreCacheIdenticalPose;
-	public			final	ForgeConfigSpec.ConfigValue<MeshInfoCacheType>				coreMeshInfoCacheType;
-	public			final	ForgeConfigSpec.ConfigValue<LayerStorageType>				coreLayerStorageType;
-	public			final	ForgeConfigSpec.ConfigValue<MeshMergeType>					coreMeshMergeType;
-	public			final	ForgeConfigSpec.ConfigValue<FeatureStatus>					coreUploadMeshImmediately;
-	public			final	ForgeConfigSpec.ConfigValue<FeatureStatus>					coreCacheDynamicRenderType;
-	public			final	ForgeConfigSpec.ConfigValue<ViewportBindingStateType>		coreViewportBindingType;
-	public			final	ForgeConfigSpec.ConfigValue<ScissorBindingStateType>		coreScissorBindingType;
+    public final ForgeConfigSpec.IntValue corePooledRingBufferSize;
+    public final ForgeConfigSpec.IntValue corePooledBatchingSize;
+    public final ForgeConfigSpec.IntValue coreCachedImageSize;
+    public final ForgeConfigSpec.IntValue coreDynamicUVResolution;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> coreDebugContextEnabled;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> coreForceTranslucentAcceleration;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> coreCacheIdenticalPose;
+    public final ForgeConfigSpec.ConfigValue<MeshInfoCacheType> coreMeshInfoCacheType;
+    public final ForgeConfigSpec.ConfigValue<LayerStorageType> coreLayerStorageType;
+    public final ForgeConfigSpec.ConfigValue<MeshDataCacheType> coreMeshMergeType;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> coreUploadMeshImmediately;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> coreCacheDynamicRenderType;
+    public final ForgeConfigSpec.ConfigValue<ViewportBindingStateType> coreViewportBindingType;
+    public final ForgeConfigSpec.ConfigValue<ScissorBindingStateType> coreScissorBindingType;
 
     public final ForgeConfigSpec.ConfigValue<FeatureStatus> restoringFeatureStatus;
     public final ForgeConfigSpec.ConfigValue<BlockBufferBindingCacheType> restoringBindingCacheType;
@@ -51,49 +51,53 @@ public class FeatureConfig {
     public final ForgeConfigSpec.ConfigValue<PipelineSetting> acceleratedTextRenderingDefaultPipeline;
     public final ForgeConfigSpec.ConfigValue<MeshType> acceleratedTextRenderingMeshType;
 
-	public			final	ForgeConfigSpec.ConfigValue<FeatureStatus>					acceleratedItemRenderingFeatureStatus;
-	public			final	ForgeConfigSpec.ConfigValue<FeatureStatus>					acceleratedItemRenderingBakeMeshForQuads;
-	public			final	ForgeConfigSpec.ConfigValue<PipelineSetting>				acceleratedItemRenderingDefaultPipeline;
-	public			final	ForgeConfigSpec.ConfigValue<MeshType>						acceleratedItemRenderingMeshType;
-	public			final	ForgeConfigSpec.ConfigValue<FeatureStatus>					acceleratedItemRenderingHandAcceleration;
-	public			final	ForgeConfigSpec.ConfigValue<FeatureStatus>					acceleratedItemRenderingGuiAcceleration;
-	public 			final	ForgeConfigSpec.ConfigValue<FeatureStatus>					acceleratedItemRenderingGuiItemBatching;
-	public			final	ForgeConfigSpec.ConfigValue<FeatureStatus>					acceleratedItemRenderingMergeGuiItemBatches;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> acceleratedItemRenderingFeatureStatus;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> acceleratedItemRenderingBakeMeshForQuads;
+    public final ForgeConfigSpec.ConfigValue<PipelineSetting> acceleratedItemRenderingDefaultPipeline;
+    public final ForgeConfigSpec.ConfigValue<MeshType> acceleratedItemRenderingMeshType;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> acceleratedItemRenderingHandAcceleration;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> acceleratedItemRenderingGuiAcceleration;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> acceleratedItemRenderingGuiItemBatching;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> acceleratedItemRenderingMergeGuiItemBatches;
 
     public final ForgeConfigSpec.ConfigValue<FeatureStatus> orientationCullingFeatureStatus;
     public final ForgeConfigSpec.ConfigValue<FeatureStatus> orientationCullingDefaultCulling;
     public final ForgeConfigSpec.ConfigValue<FeatureStatus> orientationCullingIgnoreCullState;
 
-	public			final	ForgeConfigSpec.ConfigValue<FeatureStatus>					filterFeatureStatus;
-	public			final	ForgeConfigSpec.ConfigValue<FeatureStatus>					filterMenuFilter;
-	public			final	ForgeConfigSpec.ConfigValue<FeatureStatus>					filterEntityFilter;
-	public			final	ForgeConfigSpec.ConfigValue<FeatureStatus>					filterBlockEntityFilter;
-	public			final	ForgeConfigSpec.ConfigValue<FeatureStatus>					filterItemFilter;
-	public			final	ForgeConfigSpec.ConfigValue<FeatureStatus>					filterStageFilter;
-	public			final	ForgeConfigSpec.ConfigValue<FilterType>						filterMenuFilterType;
-	public			final	ForgeConfigSpec.ConfigValue<FilterType>						filterEntityFilterType;
-	public			final	ForgeConfigSpec.ConfigValue<FilterType>						filterBlockEntityFilterType;
-	public			final	ForgeConfigSpec.ConfigValue<FilterType>						filterItemFilterType;
-	public			final	ForgeConfigSpec.ConfigValue<FilterType>						filterStageFilterType;
-	public			final	ForgeConfigSpec.ConfigValue<List<? extends String>>			filterMenuFilterValues;
-	public			final	ForgeConfigSpec.ConfigValue<List<? extends String>>			filterEntityFilterValues;
-	public			final	ForgeConfigSpec.ConfigValue<List<? extends String>>			filterBlockEntityFilterValues;
-	public			final	ForgeConfigSpec.ConfigValue<List<? extends String>>			filterItemFilterValues;
-	public			final	ForgeConfigSpec.ConfigValue<List<? extends String>>			filterStageFilterValues;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> filterFeatureStatus;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> filterMenuFilter;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> filterEntityFilter;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> filterBlockEntityFilter;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> filterItemFilter;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> filterStageFilter;
+    public final ForgeConfigSpec.ConfigValue<FilterType> filterMenuFilterType;
+    public final ForgeConfigSpec.ConfigValue<FilterType> filterEntityFilterType;
+    public final ForgeConfigSpec.ConfigValue<FilterType> filterBlockEntityFilterType;
+    public final ForgeConfigSpec.ConfigValue<FilterType> filterItemFilterType;
+    public final ForgeConfigSpec.ConfigValue<FilterType> filterStageFilterType;
+    public final ForgeConfigSpec.ConfigValue<List<? extends String>> filterMenuFilterValues;
+    public final ForgeConfigSpec.ConfigValue<List<? extends String>> filterEntityFilterValues;
+    public final ForgeConfigSpec.ConfigValue<List<? extends String>> filterBlockEntityFilterValues;
+    public final ForgeConfigSpec.ConfigValue<List<? extends String>> filterItemFilterValues;
+    public final ForgeConfigSpec.ConfigValue<List<? extends String>> filterStageFilterValues;
 
     public final ForgeConfigSpec.ConfigValue<FeatureStatus> irisCompatFeatureStatus;
     public final ForgeConfigSpec.ConfigValue<FeatureStatus> irisCompatOrientationCullingCompat;
     public final ForgeConfigSpec.ConfigValue<FeatureStatus> irisCompatShadowCulling;
     public final ForgeConfigSpec.ConfigValue<FeatureStatus> irisCompatPolygonProcessing;
 
-    public final ForgeConfigSpec.ConfigValue<FeatureStatus> sodiumCompatFeatureStatus;
-    public final ForgeConfigSpec.ConfigValue<FeatureStatus> sodiumCompatDisableOptimizedPath;
-
     public final ForgeConfigSpec.ConfigValue<FeatureStatus> curiosCompatFeatureStatus;
     public final ForgeConfigSpec.ConfigValue<FeatureStatus> curiosCompatLayerAcceleration;
     public final ForgeConfigSpec.ConfigValue<FeatureStatus> curiosItemFilter;
     public final ForgeConfigSpec.ConfigValue<FilterType> curiosItemFilterType;
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> curiosItemFilterValues;
+
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> modsFeatureStatus;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> modsEmfFeatureStatus;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> modsGeckoFeatureStatus;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> modsTlmFeatureStatus;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> modsSbmFeatureStatus;
+    public final ForgeConfigSpec.ConfigValue<FeatureStatus> modsFtbFeatureStatus;
 
     public final ForgeConfigSpec.ConfigValue<FeatureStatus> immptCompatFeatureStatus;
     public final ForgeConfigSpec.ConfigValue<FeatureStatus> immptCompatEntity;
@@ -178,7 +182,7 @@ public class FeatureConfig {
                 .comment("- MERGED: Meshes with identical vertices will be merged together, which will use less VRAM more RAM in storing the data of meshes used in merging.")
                 .translation("acceleratedrendering.configuration.core_settings.mesh_merge_type")
                 .worldRestart()
-                .defineEnum("mesh_merge_type", MeshMergeType.MERGED);
+                .defineEnum("mesh_merge_type", MeshDataCacheType.MERGED);
 
 
         coreUploadMeshImmediately = builder
@@ -201,20 +205,20 @@ public class FeatureConfig {
                 .worldRestart()
                 .defineEnum("viewport_binding_state", ViewportBindingStateType.IGNORED);
 
-		coreScissorBindingType							= builder
-				.comment				("- IGNORED: Scissor settings that will be modified by other mods will not be restored after the acceleration, which is faster but reduces compatibility with them.")
-				.comment				("- MOJANG: Scissor settings that will be modified by other mods will be recorded and restored using Mojang's GuiGraphics to work correctly with them.")
-				.comment				("- OPENGL: Scissor settings that will be modified by other mods will be recorded and restored using OpenGL to work correctly with them even if they don't set viewport using Mojang's GuiGraphics, which is slower but has most compatibility.")
-				.translation			("acceleratedrendering.configuration.core_settings.scissor_binding_state")
-				.worldRestart			()
-				.defineEnum				("scissor_binding_state",				ScissorBindingStateType.MOJANG);
+        coreScissorBindingType = builder
+                .comment("- IGNORED: Scissor settings that will be modified by other mods will not be restored after the acceleration, which is faster but reduces compatibility with them.")
+                .comment("- MOJANG: Scissor settings that will be modified by other mods will be recorded and restored using Mojang's GuiGraphics to work correctly with them.")
+                .comment("- OPENGL: Scissor settings that will be modified by other mods will be recorded and restored using OpenGL to work correctly with them even if they don't set viewport using Mojang's GuiGraphics, which is slower but has most compatibility.")
+                .translation("acceleratedrendering.configuration.core_settings.scissor_binding_state")
+                .worldRestart()
+                .defineEnum("scissor_binding_state", ScissorBindingStateType.MOJANG);
 
-		builder
-				.comment				("Block Buffer Restoring Settings")
-				.comment				("A few mods and shader packs will use their on block buffers when rendering, which may introduce conflicts when working with Accelerated Rendering that also uses block buffers.")
-				.comment				("Block Buffer Restoring can record the binding of block buffers before the acceleration and restore them after the acceleration to work correctly with them.")
-				.translation			("acceleratedrendering.configuration.core_settings.block_buffer_binding_restoring")
-				.push					("block_buffer_binding_restoring");
+        builder
+                .comment("Block Buffer Restoring Settings")
+                .comment("A few mods and shader packs will use their on block buffers when rendering, which may introduce conflicts when working with Accelerated Rendering that also uses block buffers.")
+                .comment("Block Buffer Restoring can record the binding of block buffers before the acceleration and restore them after the acceleration to work correctly with them.")
+                .translation("acceleratedrendering.configuration.core_settings.block_buffer_binding_restoring")
+                .push("block_buffer_binding_restoring");
 
         restoringFeatureStatus = builder
                 .comment("- DISABLED: Disable block buffer restoring, which is faster but may cause visual glitches with mods and shaders that uses block buffers.")
@@ -338,19 +342,19 @@ public class FeatureConfig {
                 .translation("acceleratedrendering.configuration.accelerated_item_rendering.gui_acceleration")
                 .defineEnum("gui_acceleration", FeatureStatus.ENABLED);
 
-		acceleratedItemRenderingGuiItemBatching			= builder
-				.comment				("- DISABLED: Items in the container GUI will be rendered as per item per batch if the GUI Acceleration is enabled, which is inefficient and may cause reduction in FPS, but it has better compatibility in modded container GUI.")
-				.comment				("- ENABLED: Items in the container will be rendered together in a single batch if the GUI Acceleration is enabled, which is much more efficient but has little compatibility in modded container GUI.")
-				.translation			("acceleratedrendering.configuration.accelerated_item_rendering.gui_item_batching")
-				.defineEnum				("gui_item_batching",					FeatureStatus.ENABLED);
+        acceleratedItemRenderingGuiItemBatching = builder
+                .comment("- DISABLED: Items in the container GUI will be rendered as per item per batch if the GUI Acceleration is enabled, which is inefficient and may cause reduction in FPS, but it has better compatibility in modded container GUI.")
+                .comment("- ENABLED: Items in the container will be rendered together in a single batch if the GUI Acceleration is enabled, which is much more efficient but has little compatibility in modded container GUI.")
+                .translation("acceleratedrendering.configuration.accelerated_item_rendering.gui_item_batching")
+                .defineEnum("gui_item_batching", FeatureStatus.ENABLED);
 
-		acceleratedItemRenderingMergeGuiItemBatches		= builder
-				.comment				("- DISABLED: Items rendered in background and slots will be separated into two batches when accelerate container GUI, which is inefficient any may cause slight reduction in FPS, but it has better compatibility in modded container GUI.")
-				.comment				("- ENABLED: Items rendered in background and slots will be merged into a single batch when accelerate container GUI, which is much more efficient but has less compatibility in modded container GUI.")
-				.translation			("acceleratedrendering.configuration.accelerated_item_rendering.merge_gui_item_batching")
-				.defineEnum				("merge_gui_item_batching",				FeatureStatus.ENABLED);
+        acceleratedItemRenderingMergeGuiItemBatches = builder
+                .comment("- DISABLED: Items rendered in background and slots will be separated into two batches when accelerate container GUI, which is inefficient any may cause slight reduction in FPS, but it has better compatibility in modded container GUI.")
+                .comment("- ENABLED: Items rendered in background and slots will be merged into a single batch when accelerate container GUI, which is much more efficient but has less compatibility in modded container GUI.")
+                .translation("acceleratedrendering.configuration.accelerated_item_rendering.merge_gui_item_batching")
+                .defineEnum("merge_gui_item_batching", FeatureStatus.ENABLED);
 
-		builder.pop();
+        builder.pop();
 
         builder
                 .comment("Accelerated Text Rendering Settings")
@@ -417,17 +421,17 @@ public class FeatureConfig {
                 .translation("acceleratedrendering.configuration.filter.feature_status")
                 .defineEnum("feature_status", FeatureStatus.ENABLED);
 
-		filterMenuFilter								= builder
-				.comment				("- DISABLED: Menu filter will be disabled and geometries in all container GUI will be accelerated.")
-				.comment				("- ENABLED: Menu filter will test if geometries in specific container GUI should be accelerated when rendering based on the filter values and the filter type.")
-				.translation			("acceleratedrendering.configuration.filter.menu_filter")
-				.defineEnum				("menu_filter",							FeatureStatus.ENABLED);
+        filterMenuFilter = builder
+                .comment("- DISABLED: Menu filter will be disabled and geometries in all container GUI will be accelerated.")
+                .comment("- ENABLED: Menu filter will test if geometries in specific container GUI should be accelerated when rendering based on the filter values and the filter type.")
+                .translation("acceleratedrendering.configuration.filter.menu_filter")
+                .defineEnum("menu_filter", FeatureStatus.ENABLED);
 
-		filterEntityFilter								= builder
-				.comment				("- DISABLED: Entity filter will be disabled and all entities will be accelerated.")
-				.comment				("- ENABLED: Entity filter will test if the entities should be accelerated when rendering based on the filter values and the filter type.")
-				.translation			("acceleratedrendering.configuration.filter.entity_filter")
-				.defineEnum				("entity_filter",						FeatureStatus.DISABLED);
+        filterEntityFilter = builder
+                .comment("- DISABLED: Entity filter will be disabled and all entities will be accelerated.")
+                .comment("- ENABLED: Entity filter will test if the entities should be accelerated when rendering based on the filter values and the filter type.")
+                .translation("acceleratedrendering.configuration.filter.entity_filter")
+                .defineEnum("entity_filter", FeatureStatus.DISABLED);
 
         filterBlockEntityFilter = builder
                 .comment("- DISABLED: Block entity filter will be disabled and all block entities will be accelerated.")
@@ -447,17 +451,17 @@ public class FeatureConfig {
                 .translation("acceleratedrendering.configuration.filter.stage_filter")
                 .defineEnum("stage_filter", FeatureStatus.ENABLED);
 
-		filterMenuFilterType							= builder
-				.comment				("- BLACKLIST: Container GUIs that are not in the filter values can pass the filter and be accelerated when rendering.")
-				.comment				("- WHITELIST: Container GUIs that are in the filter values can pass the filter and be accelerated when rendering.")
-				.translation			("acceleratedrendering.configuration.filter.menu_filter_type")
-				.defineEnum				("menu_filter_type",					FilterType.WHITELIST);
+        filterMenuFilterType = builder
+                .comment("- BLACKLIST: Container GUIs that are not in the filter values can pass the filter and be accelerated when rendering.")
+                .comment("- WHITELIST: Container GUIs that are in the filter values can pass the filter and be accelerated when rendering.")
+                .translation("acceleratedrendering.configuration.filter.menu_filter_type")
+                .defineEnum("menu_filter_type", FilterType.WHITELIST);
 
-		filterEntityFilterType							= builder
-				.comment				("- BLACKLIST: Entities that are not in the filter values can pass the filter and be accelerated when rendering.")
-				.comment				("- WHITELIST: Entities that are in the filter values can pass the filter and be accelerated when rendering.")
-				.translation			("acceleratedrendering.configuration.filter.entity_filter_type")
-				.defineEnum				("entity_filter_type",					FilterType.BLACKLIST);
+        filterEntityFilterType = builder
+                .comment("- BLACKLIST: Entities that are not in the filter values can pass the filter and be accelerated when rendering.")
+                .comment("- WHITELIST: Entities that are in the filter values can pass the filter and be accelerated when rendering.")
+                .translation("acceleratedrendering.configuration.filter.entity_filter_type")
+                .defineEnum("entity_filter_type", FilterType.BLACKLIST);
 
         filterBlockEntityFilterType = builder
                 .comment("- BLACKLIST: Block entities that are not in the filter values can pass the filter and be accelerated when rendering.")
@@ -477,19 +481,19 @@ public class FeatureConfig {
                 .translation("acceleratedrendering.configuration.filter.stage_filter_type")
                 .defineEnum("stage_filter_type", FilterType.WHITELIST);
 
-		filterMenuFilterValues							= builder
-				.comment				("You can configure the menu filter by this list.")
-				.comment				("Menu filter will use this list and the filter type to determine if a container GUI can pass the filter.")
-				.translation			("acceleratedrendering.configuration.filter.menu_filter_values")
-				.worldRestart			()
-				.defineListAllowEmpty	("menu_filter_values",					ObjectArrayList.of("minecraft:.*"),								object -> object instanceof String);
+        filterMenuFilterValues = builder
+                .comment("You can configure the menu filter by this list.")
+                .comment("Menu filter will use this list and the filter type to determine if a container GUI can pass the filter.")
+                .translation("acceleratedrendering.configuration.filter.menu_filter_values")
+                .worldRestart()
+                .defineListAllowEmpty("menu_filter_values", ObjectArrayList.of("minecraft:.*"), object -> object instanceof String);
 
-		filterEntityFilterValues						= builder
-				.comment				("You can configure the entity filter by this list.")
-				.comment				("Entity filter will use this list and the filter type to determine if an entity can pass the filter.")
-				.translation			("acceleratedrendering.configuration.filter.entity_filter_values")
-				.worldRestart			()
-				.defineListAllowEmpty	("entity_filter_values",				new ObjectArrayList<>(),										object -> object instanceof String);
+        filterEntityFilterValues = builder
+                .comment("You can configure the entity filter by this list.")
+                .comment("Entity filter will use this list and the filter type to determine if an entity can pass the filter.")
+                .translation("acceleratedrendering.configuration.filter.entity_filter_values")
+                .worldRestart()
+                .defineListAllowEmpty("entity_filter_values", new ObjectArrayList<>(), object -> object instanceof String);
 
         filterBlockEntityFilterValues = builder
                 .comment("You can configure the block entity filter by this list.")
@@ -548,26 +552,6 @@ public class FeatureConfig {
         builder.pop();
 
         builder
-                .comment("Sodium Compatibility Settings")
-                .comment("Sodium Compatibility Settings allows Accelerated Rendering to work correctly with Sodium.")
-                .translation("acceleratedrendering.configuration.sodium_compatibility")
-                .push("sodium_compatibility");
-
-        sodiumCompatFeatureStatus = builder
-                .comment("- DISABLED: Accelerated Rendering may be incompatible with Sodium that takes over the rendering before Accelerated Rendering.")
-                .comment("- ENABLED: Accelerated Rendering will take over the rendering before Sodium to work correctly with Sodium.")
-                .translation("acceleratedrendering.configuration.sodium_compatibility.feature_status")
-                .defineEnum("feature_status", FeatureStatus.ENABLED);
-
-        sodiumCompatDisableOptimizedPath = builder
-                .comment("- DISABLED: Sodium's optimized vertex writing code path will not be disabled unless mods explicitly enable it temporarily when rendering their on geometries, which will take over the rendering before Accelerated Rendering's pipeline.")
-                .comment("- ENABLED: Sodium's optimized vertex writing code path will be disabled unless mods explicitly disable it temporarily when rendering their on geometries and Accelerated Rendering's pipeline can take over the rendering. However, when acceleration feature is disabled, it's highly recommend to enable the optimized code path.")
-                .translation("acceleratedrendering.configuration.sodium_compatibility.disabled_optimized_path")
-                .defineEnum("disabled_optimized_path", FeatureStatus.ENABLED);
-
-        builder.pop();
-
-        builder
                 .comment("Curios Compatibility Settings")
                 .comment("Curios Compatibility Settings allows Accelerated Rendering to work correctly with Curios.")
                 .translation("acceleratedrendering.configuration.curios_compatibility")
@@ -606,6 +590,49 @@ public class FeatureConfig {
 
         builder.pop();
 
+        builder
+                .comment("Miscellaneous Mods Compatibility Settings")
+                .comment("Miscellaneous Mod Compatibility Settings allows Accelerated Rendering to prevent negative optimization on specific mods by controlling whether Accelerated Rendering should accelerate the rendering of the corresponding mod.")
+                .translation("acceleratedrendering.configuration.mods_compatibility")
+                .push("mods_compatibility");
+
+        modsFeatureStatus = builder
+                .comment("- DISABLED: Accelerations of all mods listed in the miscellaneous mods compatibility settings will be disabled.")
+                .comment("- ENABLED: Accelerated Rendering will determine if a mod should be accelerated by the acceleration feature configuration item of this mod listed below.")
+                .translation("acceleratedrendering.configuration.mods_compatibility.feature_status")
+                .defineEnum("feature_status", FeatureStatus.ENABLED);
+
+        modsEmfFeatureStatus = builder
+                .comment("- DISABLED: Accelerations of animated ModelPart variants in Entity Model Features will be disabled.")
+                .comment("- ENABLED: Accelerations of animated ModelPart variants in Entity Model Features will be enabled.")
+                .translation("acceleratedrendering.configuration.mods_compatibility.emf_feature_status")
+                .defineEnum("emf_feature_status", FeatureStatus.ENABLED);
+
+        modsGeckoFeatureStatus = builder
+                .comment("- DISABLED: Accelerations of models in GeckoLib will be disabled.")
+                .comment("- ENABLED: Accelerations of models in GeckoLib will be enabled.")
+                .translation("acceleratedrendering.configuration.mods_compatibility.gecko_feature_status")
+                .defineEnum("gecko_feature_status", FeatureStatus.ENABLED);
+
+        modsTlmFeatureStatus = builder
+                .comment("- DISABLED: Accelerations of GeckoLib variant models in Touhou Little Maid will be disabled.")
+                .comment("- ENABLED: Accelerations of GeckoLib variant models in Touhou Little Maid will be enabled.")
+                .translation("acceleratedrendering.configuration.mods_compatibility.tlm_feature_status")
+                .defineEnum("tlm_feature_status", FeatureStatus.ENABLED);
+
+        modsSbmFeatureStatus = builder
+                .comment("- DISABLED: Accelerations of bedrock models in Simple Bedrock Model will be disabled.")
+                .comment("- ENABLED: Accelerations of bedrock models in Simple Bedrock Model will be enabled.")
+                .translation("acceleratedrendering.configuration.mods_compatibility.sbm_feature_status")
+                .defineEnum("sbm_feature_status", FeatureStatus.ENABLED);
+
+        modsFtbFeatureStatus = builder
+                .comment("- DISABLED: Accelerations of UI driven by FTB Library will be disabled.")
+                .comment("- ENABLED: Accelerations of UI driven by FTB Library will be enabled.")
+                .translation("acceleratedrendering.configuration.mods_compatibility.ftb_feature_status")
+                .defineEnum("ftb_feature_status", FeatureStatus.ENABLED);
+
+        builder.pop();
         builder
                 .comment("Immpt Compatibility Settings")
                 .translation("acceleratedrendering.configuration.immpt_compatibility")
